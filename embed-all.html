@@ -150,6 +150,7 @@
   }
   .det:hover { border-color: var(--primary); color: var(--primary-dark); background: var(--primary-pale); }
 
+  .feed-loading { font-size: 12px; color: var(--text-light); padding: 16px; text-align: center; }
   .scroll-card { border: 2px solid var(--primary); max-height: 420px; overflow-y: auto; }
   .scroll-card::-webkit-scrollbar { width: 5px; }
   .scroll-card::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
@@ -362,23 +363,14 @@
   <div class="center">
     <div class="card scroll-card">
       <div class="card-title"><span class="icon orange">&#128227;</span>社内通達</div>
-      <ul class="feed">
-        <li class="feed-item"><div class="fi-c"><span class="cat rule">規程</span><div class="fi-t">【通達】在宅タイムカード仕様変更<span class="badge new">NEW</span></div><div class="fi-d">2026-02-18 10:00</div></div><a href="#" class="det">詳細</a></li>
-        <li class="feed-item"><div class="fi-c"><span class="cat hr">人事</span><div class="fi-t">2月度 人事異動のお知らせ</div><div class="fi-d">2026-02-15 09:00</div></div><a href="#" class="det">詳細</a></li>
-        <li class="feed-item"><div class="fi-c"><span class="cat rule">規程</span><div class="fi-t">就業規則 改定のお知らせ</div><div class="fi-d">2026-02-10 14:00</div></div><a href="#" class="det">詳細</a></li>
-      </ul>
+      <div id="noticeLoading" class="feed-loading">読み込み中...</div>
+      <ul class="feed" id="noticeList"></ul>
     </div>
 
     <div class="card scroll-card">
       <div class="card-title"><span class="icon green">&#128240;</span>社内ニュース</div>
-      <ul class="feed">
-        <li class="feed-item"><div class="fi-c"><span class="cat event">イベント</span><div class="fi-t">ラシクラボカップ開催<span class="badge new">NEW</span></div><div class="fi-d">2026-02-17 15:00</div></div><a href="#" class="det">詳細</a></li>
-        <li class="feed-item"><div class="fi-c"><span class="cat info">告知</span><div class="fi-t">さいたま新都心事業所 開所記念パーティー</div><div class="fi-d">2026-02-14 15:00</div></div><a href="#" class="det">詳細</a></li>
-        <li class="feed-item"><div class="fi-c"><span class="cat event">イベント</span><div class="fi-t">社内勉強会「AI活用入門」参加者募集</div><div class="fi-d">2026-02-12 10:00</div></div><a href="#" class="det">詳細</a></li>
-        <li class="feed-item"><div class="fi-c"><span class="cat info">告知</span><div class="fi-t">健康診断のご案内</div><div class="fi-d">2026-02-10 09:00</div></div><a href="#" class="det">詳細</a></li>
-        <li class="feed-item"><div class="fi-c"><span class="cat event">イベント</span><div class="fi-t">3月度 全体会議のお知らせ</div><div class="fi-d">2026-02-08 11:00</div></div><a href="#" class="det">詳細</a></li>
-        <li class="feed-item"><div class="fi-c"><span class="cat info">告知</span><div class="fi-t">新入社員紹介（2月入社）</div><div class="fi-d">2026-02-03 10:00</div></div><a href="#" class="det">詳細</a></li>
-      </ul>
+      <div id="newsLoading" class="feed-loading">読み込み中...</div>
+      <ul class="feed" id="newsList"></ul>
     </div>
   </div>
 
@@ -547,6 +539,78 @@ var cy=2026,cm2=2;
 function r(){var d=new Date(),el=document.getElementById('ml');if(!el)return;el.textContent=cy+'年 '+cm2+'月';var f=new Date(cy,cm2-1,1).getDay(),n=new Date(cy,cm2,0).getDate(),h='<tr>';for(var i=0;i<f;i++)h+='<td></td>';for(var x=1;x<=n;x++){var w=(f+x-1)%7,c='';if(d.getFullYear()===cy&&d.getMonth()===cm2-1&&d.getDate()===x)c='today';else if(w===0)c='sun';else if(w===6)c='sat';h+='<td class="'+c+'">'+x+'</td>';if(w===6&&x<n)h+='</tr><tr>'}h+='</tr>';document.getElementById('cb').innerHTML=h}
 function cm(d){cm2+=d;if(cm2>12){cm2=1;cy++}if(cm2<1){cm2=12;cy--}r()}
 r();
+
+/* ==========================================
+   Blogger 連携設定
+   ==========================================
+   使い方:
+   1. Blogger (blogger.com) でブログを1つ作成
+   2. 記事を投稿する際に「ラベル」を設定:
+      - 社内通達 → ラベル「通達」を付ける（サブラベル: 規程, 人事, 総務 など）
+      - 社内ニュース → ラベル「ニュース」を付ける（サブラベル: イベント, 告知 など）
+   3. 下の BLOG_URL にブログのURLを設定
+   ========================================== */
+
+var BLOG_URL = 'https://rashikuru-info.blogspot.com';
+// ↑↑↑ ここを実際のBloggerのURLに変更してください ↑↑↑
+
+var CAT_COLORS = {
+  '規程':'rule','人事':'hr','総務':'hr','イベント':'event','告知':'info',
+  '重要':'rule','お知らせ':'info','研修':'event'
+};
+
+function fetchBlogger(label, targetId, loadingId, max) {
+  var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json-in-script&max-results=' + (max||10) + '&callback=handleBlog_' + targetId;
+  window['handleBlog_' + targetId] = function(data) {
+    var el = document.getElementById(targetId);
+    var ld = document.getElementById(loadingId);
+    if (ld) ld.style.display = 'none';
+    if (!data.feed.entry || data.feed.entry.length === 0) {
+      el.innerHTML = '<li class="feed-item" style="justify-content:center;color:#999;font-size:12px;padding:20px">記事がありません。Bloggerに投稿するとここに表示されます。</li>';
+      return;
+    }
+    var now = new Date();
+    var html = '';
+    data.feed.entry.forEach(function(entry) {
+      var title = entry.title.$t;
+      var published = entry.published.$t;
+      var date = new Date(published);
+      var dateStr = date.getFullYear() + '-' + ('0'+(date.getMonth()+1)).slice(-2) + '-' + ('0'+date.getDate()).slice(-2) + ' ' + ('0'+date.getHours()).slice(-2) + ':' + ('0'+date.getMinutes()).slice(-2);
+      var link = '#';
+      if (entry.link) {
+        for (var i = 0; i < entry.link.length; i++) {
+          if (entry.link[i].rel === 'alternate') { link = entry.link[i].href; break; }
+        }
+      }
+      var labels = entry.category ? entry.category.map(function(c){return c.term}) : [];
+      var subLabel = '';
+      labels.forEach(function(l) {
+        if (l !== label && CAT_COLORS[l]) subLabel = l;
+        else if (l !== label && !subLabel) subLabel = l;
+      });
+      var catClass = CAT_COLORS[subLabel] || 'info';
+      var isNew = (now - date) < 3 * 24 * 60 * 60 * 1000;
+      html += '<li class="feed-item"><div class="fi-c">';
+      if (subLabel) html += '<span class="cat ' + catClass + '">' + subLabel + '</span>';
+      html += '<div class="fi-t">' + title;
+      if (isNew) html += '<span class="badge new">NEW</span>';
+      html += '</div><div class="fi-d">' + dateStr + '</div></div>';
+      html += '<a href="' + link + '" target="_blank" class="det">詳細</a></li>';
+    });
+    el.innerHTML = html;
+  };
+  var s = document.createElement('script');
+  s.src = url;
+  s.onerror = function() {
+    var ld = document.getElementById(loadingId);
+    if (ld) ld.textContent = 'Blogger未接続（URL設定後に表示されます）';
+  };
+  document.body.appendChild(s);
+}
+
+// 社内通達 = ラベル「通達」、社内ニュース = ラベル「ニュース」で取得
+fetchBlogger('通達', 'noticeList', 'noticeLoading', 10);
+fetchBlogger('ニュース', 'newsList', 'newsLoading', 10);
 </script>
 </body>
 </html>
