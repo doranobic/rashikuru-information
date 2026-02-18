@@ -196,6 +196,81 @@
   .cal-tbl td.sun { color: #D32F2F; }
   .cal-note { margin-top: 8px; font-size: 11px; color: var(--text-light); text-align: center; padding: 6px; background: #FFF8E1; border-radius: 6px; }
 
+  /* Full-width section (below main grid) */
+  .full-section {
+    max-width: 1280px; margin: 0 auto 16px; padding: 0 12px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  @media (max-width: 768px) { .full-section { grid-template-columns: 1fr; } }
+
+  /* Org Chart */
+  .org-tree { text-align: center; overflow-x: auto; padding: 10px 0; }
+  .org-node {
+    display: inline-block; padding: 8px 16px; border: 2px solid var(--primary);
+    border-radius: 8px; font-size: 12px; font-weight: 600; background: var(--primary-pale);
+    color: var(--primary-dark); margin: 2px;
+  }
+  .org-node.top { background: var(--primary-dark); color: var(--white); border-color: var(--primary-dark); font-size: 13px; }
+  .org-level { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .org-line { width: 2px; height: 16px; background: var(--primary-light); margin: 0 auto; }
+  .org-hline { height: 2px; background: var(--primary-light); margin: 0 20px; }
+
+  /* Staff Directory */
+  .staff-search {
+    width: 100%; padding: 8px 12px; border: 2px solid var(--border);
+    border-radius: 8px; font-size: 13px; outline: none; margin-bottom: 10px;
+    transition: border-color .2s;
+  }
+  .staff-search:focus { border-color: var(--primary); }
+  .dept-filter { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+  .dept-btn {
+    padding: 5px 12px; border: 1px solid var(--border); border-radius: 16px;
+    font-size: 11px; cursor: pointer; background: var(--white); transition: all .2s;
+    color: var(--text);
+  }
+  .dept-btn:hover, .dept-btn.active {
+    background: var(--primary); color: var(--white); border-color: var(--primary);
+  }
+  .staff-list { max-height: 320px; overflow-y: auto; }
+  .staff-list::-webkit-scrollbar { width: 5px; }
+  .staff-list::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
+  .staff-row {
+    display: flex; align-items: center; gap: 10px; padding: 9px 8px;
+    border-bottom: 1px solid #f0f0f0; font-size: 12px; transition: background .15s;
+  }
+  .staff-row:hover { background: var(--primary-pale); }
+  .staff-avatar {
+    width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light);
+    color: var(--primary-dark); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .staff-name { font-weight: 600; }
+  .staff-dept {
+    font-size: 10px; background: #f0f0f0; padding: 1px 7px;
+    border-radius: 4px; color: var(--text-light);
+  }
+  .staff-role { font-size: 11px; color: var(--text-light); margin-left: auto; }
+
+  /* FAQ */
+  .faq-q {
+    display: flex; align-items: center; gap: 8px; padding: 12px 0;
+    cursor: pointer; font-weight: 600; font-size: 13px; border: none;
+    background: none; width: 100%; text-align: left; color: var(--text);
+    border-bottom: 1px solid var(--border); transition: color .2s;
+  }
+  .faq-q:hover { color: var(--primary-dark); }
+  .faq-q .q-icon {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--primary);
+    color: var(--white); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .faq-a {
+    max-height: 0; overflow: hidden; transition: max-height .3s ease;
+    font-size: 12px; color: var(--text-light);
+  }
+  .faq-a.open { max-height: 300px; }
+  .faq-a-inner { padding: 10px 14px 10px 38px; line-height: 1.8; }
+
   /* Responsive */
   @media (max-width: 960px) {
     .main { grid-template-columns: 1fr 1fr; }
@@ -352,8 +427,122 @@
   </div>
 </div>
 
+<!-- ===== FULL-WIDTH: ORG + STAFF / FAQ ===== -->
+<div class="full-section">
+
+  <!-- Staff Directory + Org Chart -->
+  <div>
+    <!-- Org Chart -->
+    <div class="card">
+      <div class="card-title"><span class="icon green">&#127963;</span>組織図</div>
+      <div class="org-tree">
+        <div><span class="org-node top">代表取締役</span></div>
+        <div class="org-line"></div>
+        <div class="org-level">
+          <span class="org-node">本部</span>
+          <span class="org-node">さいたま新都心事業所</span>
+        </div>
+        <div class="org-line"></div>
+        <div class="org-level">
+          <span class="org-node">人事・労務</span>
+          <span class="org-node">総務・施設</span>
+          <span class="org-node">経理</span>
+          <span class="org-node">営業</span>
+          <span class="org-node">クリエイティブ</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Staff Directory -->
+    <div class="card">
+      <div class="card-title"><span class="icon blue">&#128101;</span>社員名簿</div>
+      <input type="text" class="staff-search" id="staffSearch" placeholder="名前・部署で検索..." oninput="filterStaff()">
+      <div class="dept-filter">
+        <button class="dept-btn active" onclick="filterDept(this,'all')">全員</button>
+        <button class="dept-btn" onclick="filterDept(this,'人事・労務')">人事・労務</button>
+        <button class="dept-btn" onclick="filterDept(this,'総務・施設')">総務・施設</button>
+        <button class="dept-btn" onclick="filterDept(this,'経理')">経理</button>
+        <button class="dept-btn" onclick="filterDept(this,'営業')">営業</button>
+        <button class="dept-btn" onclick="filterDept(this,'クリエイティブ')">クリエイティブ</button>
+      </div>
+      <div class="staff-list" id="staffList">
+        <div class="staff-row" data-dept="人事・労務"><div class="staff-avatar">田</div><div><div class="staff-name">田中 太郎</div><span class="staff-dept">人事・労務</span></div><div class="staff-role">部長</div></div>
+        <div class="staff-row" data-dept="人事・労務"><div class="staff-avatar">鈴</div><div><div class="staff-name">鈴木 花子</div><span class="staff-dept">人事・労務</span></div><div class="staff-role">主任</div></div>
+        <div class="staff-row" data-dept="総務・施設"><div class="staff-avatar">佐</div><div><div class="staff-name">佐藤 一郎</div><span class="staff-dept">総務・施設</span></div><div class="staff-role">課長</div></div>
+        <div class="staff-row" data-dept="総務・施設"><div class="staff-avatar">高</div><div><div class="staff-name">高橋 美咲</div><span class="staff-dept">総務・施設</span></div><div class="staff-role">一般</div></div>
+        <div class="staff-row" data-dept="経理"><div class="staff-avatar">伊</div><div><div class="staff-name">伊藤 健太</div><span class="staff-dept">経理</span></div><div class="staff-role">課長</div></div>
+        <div class="staff-row" data-dept="経理"><div class="staff-avatar">渡</div><div><div class="staff-name">渡辺 裕子</div><span class="staff-dept">経理</span></div><div class="staff-role">一般</div></div>
+        <div class="staff-row" data-dept="営業"><div class="staff-avatar">山</div><div><div class="staff-name">山本 大輔</div><span class="staff-dept">営業</span></div><div class="staff-role">部長</div></div>
+        <div class="staff-row" data-dept="営業"><div class="staff-avatar">中</div><div><div class="staff-name">中村 愛</div><span class="staff-dept">営業</span></div><div class="staff-role">主任</div></div>
+        <div class="staff-row" data-dept="営業"><div class="staff-avatar">小</div><div><div class="staff-name">小林 翔太</div><span class="staff-dept">営業</span></div><div class="staff-role">一般</div></div>
+        <div class="staff-row" data-dept="クリエイティブ"><div class="staff-avatar">加</div><div><div class="staff-name">加藤 さくら</div><span class="staff-dept">クリエイティブ</span></div><div class="staff-role">リーダー</div></div>
+        <div class="staff-row" data-dept="クリエイティブ"><div class="staff-avatar">吉</div><div><div class="staff-name">吉田 拓海</div><span class="staff-dept">クリエイティブ</span></div><div class="staff-role">一般</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div>
+    <div class="card">
+      <div class="card-title"><span class="icon orange">&#10067;</span>よくある質問（FAQ）</div>
+
+      <div>
+        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>有給休暇の申請方法は？</button>
+        <div class="faq-a"><div class="faq-a-inner">マイページ・拠点ハブの「申請・届出」から有給休暇申請フォームを開いてください。<br>申請は原則3営業日前までにお願いします。急な体調不良の場合は当日朝に上長へ連絡の上、事後申請も可能です。</div></div>
+      </div>
+      <div>
+        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>経費精算の締め日はいつですか？</button>
+        <div class="faq-a"><div class="faq-a-inner">毎月25日が締め日です。25日までに申請された経費は翌月15日の給与と一緒に振り込まれます。<br>領収書の原本は経理部まで提出してください。</div></div>
+      </div>
+      <div>
+        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>備品を購入したい場合はどうすればよいですか？</button>
+        <div class="faq-a"><div class="faq-a-inner">マイページ・拠点ハブの「備品管理」から購入申請フォームに記入してください。<br>5,000円未満：上長承認のみ<br>5,000円以上：上長承認＋総務部承認が必要です。</div></div>
+      </div>
+      <div>
+        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>会議室の予約方法は？</button>
+        <div class="faq-a"><div class="faq-a-inner">Googleカレンダーで会議室リソースを選択して予約できます。<br>利用後は原状復帰（椅子を戻す、ホワイトボードを消す）をお願いします。</div></div>
+      </div>
+      <div>
+        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>パスワードを忘れた・ロックされた場合は？</button>
+        <div class="faq-a"><div class="faq-a-inner">ヘルプデスクへ連絡してください（内線: 999）。<br>本人確認の上、パスワードリセットを行います。リセット後は速やかに新しいパスワードを設定してください。</div></div>
+      </div>
+      <div>
+        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>在宅勤務の申請はどうすればよいですか？</button>
+        <div class="faq-a"><div class="faq-a-inner">前日までにマイページ・拠点ハブの「申請・届出」から在宅勤務申請を提出してください。<br>在宅勤務中はタイムカードの打刻を忘れずにお願いします。</div></div>
+      </div>
+      <div>
+        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>社内イベントの企画を出したいのですが？</button>
+        <div class="faq-a"><div class="faq-a-inner">社内掲示板の「イベント企画提案」フォームから提出できます。<br>予算が必要な場合は総務部との事前相談をお願いします。過去のイベント事例はマニュアルページで確認できます。</div></div>
+      </div>
+      <div>
+        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>住所変更・氏名変更の届出は？</button>
+        <div class="faq-a"><div class="faq-a-inner">マイページ・拠点ハブの「申請・届出」から変更届を提出してください。<br>変更後10日以内に届出をお願いします。届出書類は人事・労務部門へ自動送信されます。</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 <script>
 function t(e){e.classList.toggle('open');e.nextElementSibling.classList.toggle('open')}
+function tf(e){e.nextElementSibling.classList.toggle('open')}
+var curDept='all';
+function filterStaff(){
+  var q=document.getElementById('staffSearch').value.toLowerCase();
+  document.querySelectorAll('.staff-row').forEach(function(r){
+    var name=r.querySelector('.staff-name').textContent.toLowerCase();
+    var dept=r.getAttribute('data-dept').toLowerCase();
+    var matchQ=!q||name.indexOf(q)!==-1||dept.indexOf(q)!==-1;
+    var matchD=curDept==='all'||r.getAttribute('data-dept')===curDept;
+    r.style.display=(matchQ&&matchD)?'flex':'none';
+  });
+}
+function filterDept(btn,dept){
+  curDept=dept;
+  document.querySelectorAll('.dept-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  filterStaff();
+}
 var cy=2026,cm2=2;
 function r(){var d=new Date(),el=document.getElementById('ml');if(!el)return;el.textContent=cy+'年 '+cm2+'月';var f=new Date(cy,cm2-1,1).getDay(),n=new Date(cy,cm2,0).getDate(),h='<tr>';for(var i=0;i<f;i++)h+='<td></td>';for(var x=1;x<=n;x++){var w=(f+x-1)%7,c='';if(d.getFullYear()===cy&&d.getMonth()===cm2-1&&d.getDate()===x)c='today';else if(w===0)c='sun';else if(w===6)c='sat';h+='<td class="'+c+'">'+x+'</td>';if(w===6&&x<n)h+='</tr><tr>'}h+='</tr>';document.getElementById('cb').innerHTML=h}
 function cm(d){cm2+=d;if(cm2>12){cm2=1;cy++}if(cm2<1){cm2=12;cy--}r()}
