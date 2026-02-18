@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>相談・連絡 - ラシクルinformation</title>
+<style>
+  :root {
+    --primary: #7CB342;
+    --primary-dark: #558B2F;
+    --primary-light: #C5E1A5;
+    --primary-pale: #F1F8E9;
+    --accent: #FF8F00;
+    --text: #333;
+    --text-light: #666;
+    --bg: #F5F5F5;
+    --white: #fff;
+    --border: #E0E0E0;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; font-family: 'Segoe UI','Hiragino Kaku Gothic ProN','Noto Sans JP','Meiryo',sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Header */
+  .header {
+    background: var(--primary-dark); color: var(--white);
+    padding: 0 20px; display: flex; align-items: center;
+    justify-content: space-between; height: 52px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,.15);
+  }
+  .header-logo {
+    font-size: 16px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    text-decoration: none; color: var(--white);
+  }
+  .header-logo .dot {
+    width: 9px; height: 9px; background: var(--primary-light); border-radius: 50%;
+  }
+  .back-btn {
+    color: var(--white); text-decoration: none; font-size: 13px;
+    padding: 7px 14px; border-radius: 6px; transition: background .2s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .back-btn:hover { background: rgba(255,255,255,.18); }
+
+  /* Page Title */
+  .page-hero {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, #33691E 100%);
+    color: var(--white); padding: 28px 20px; text-align: center;
+  }
+  .page-hero h1 { font-size: 22px; font-weight: 800; letter-spacing: 2px; }
+  .page-hero p { font-size: 13px; opacity: .8; margin-top: 4px; }
+
+  .container { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+
+  /* Search */
+  .search-wrap { margin-bottom: 20px; }
+  .search-input {
+    width: 100%; padding: 10px 14px; border: 2px solid var(--border);
+    border-radius: 8px; font-size: 14px; outline: none; transition: border-color .2s;
+  }
+  .search-input:focus { border-color: var(--primary); }
+
+  /* Section */
+  .section { margin-bottom: 20px; }
+  .section-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px; cursor: pointer; user-select: none;
+    background: var(--white); border-radius: var(--radius) var(--radius) 0 0;
+    box-shadow: var(--shadow); border-left: 4px solid var(--primary);
+    font-weight: 700; font-size: 15px; color: var(--primary-dark);
+    transition: background .2s;
+  }
+  .section-header:hover { background: var(--primary-pale); }
+  .section-header .arr { transition: transform .3s; font-size: 11px; }
+  .section-header.open .arr { transform: rotate(90deg); }
+  .section-body {
+    max-height: 0; overflow: hidden; transition: max-height .4s ease;
+    background: var(--white); border-radius: 0 0 var(--radius) var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .section-body.open { max-height: 2000px; }
+  .section-body-inner { padding: 4px 0; }
+
+  /* Sub-section for creative */
+  .sub-header {
+    display: flex; align-items: center; gap: 6px;
+    padding: 9px 20px; cursor: pointer; font-weight: 600;
+    font-size: 13px; color: var(--text); border-bottom: 1px solid #f0f0f0;
+    transition: color .2s, background .2s;
+  }
+  .sub-header:hover { color: var(--primary-dark); background: var(--primary-pale); }
+  .sub-header .arr { transition: transform .3s; font-size: 10px; }
+  .sub-header.open .arr { transform: rotate(90deg); }
+  .sub-body { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+  .sub-body.open { max-height: 1000px; }
+
+  /* Contact Card */
+  .contact-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px; border-bottom: 1px solid #f5f5f5;
+    transition: background .15s;
+  }
+  .contact-card:hover { background: var(--primary-pale); }
+  .contact-card:last-child { border-bottom: none; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--primary-light); color: var(--primary-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
+  }
+  .contact-info { flex: 1; min-width: 0; }
+  .contact-name { font-size: 14px; font-weight: 700; }
+  .contact-meta { font-size: 11px; color: var(--text-light); margin-top: 1px; }
+  .contact-id { font-size: 10px; color: #999; font-family: monospace; }
+  .contact-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .action-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 10px; border: 1px solid var(--border); border-radius: 6px;
+    font-size: 11px; color: var(--text); text-decoration: none;
+    background: var(--white); cursor: pointer; transition: all .2s; white-space: nowrap;
+  }
+  .action-btn:hover { border-color: var(--primary); color: var(--primary-dark); background: var(--primary-pale); }
+  .action-btn.mail { border-color: #1976D2; color: #1976D2; }
+  .action-btn.mail:hover { background: #E3F2FD; }
+  .action-btn.chat { border-color: var(--primary); color: var(--primary-dark); }
+  .action-btn.chat:hover { background: var(--primary-pale); }
+
+  /* No results */
+  .no-results { display: none; text-align: center; padding: 40px; color: var(--text-light); font-size: 14px; }
+
+  @media (max-width: 640px) {
+    .contact-card { flex-wrap: wrap; gap: 8px; padding: 12px 14px; }
+    .contact-actions { width: 100%; margin-left: 52px; }
+    .action-btn { font-size: 10px; padding: 4px 8px; }
+    .section-header { font-size: 14px; padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="https://doranobic.github.io/rashikuru-information/embed-all.html" class="header-logo"><span class="dot"></span>ラシクルinformation</a>
+  <a href="https://doranobic.github.io/rashikuru-information/embed-all.html" class="back-btn">&#9664; ホームへ戻る</a>
+</header>
+
+<section class="page-hero">
+  <h1>&#128222; 相談・連絡</h1>
+  <p>担当者に直接連絡できます。お気軽にご相談ください。</p>
+</section>
+
+<div class="container">
+  <div class="search-wrap">
+    <input type="text" class="search-input" id="searchInput" placeholder="名前・部署・カテゴリで検索..." oninput="filterCards()">
+  </div>
+  <div id="noResults" class="no-results">該当する担当者が見つかりません</div>
+
+  <!-- 総務関連 -->
+  <div class="section" data-section>
+    <div class="section-header open" onclick="toggleSec(this)">
+      <span class="arr">&#9654;</span>総務関連
+    </div>
+    <div class="section-body open"><div class="section-body-inner">
+      <div class="contact-card" data-search="矢谷綾香 本部 総務">
+        <div class="avatar">矢</div>
+        <div class="contact-info">
+          <div class="contact-name">矢谷 綾香</div>
+          <div class="contact-meta">本部 ／ 総務</div>
+          <div class="contact-id">ID: R-1021</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:yatani.ayaka@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="小幡美優 本部 総務">
+        <div class="avatar">小</div>
+        <div class="contact-info">
+          <div class="contact-name">小幡 美優</div>
+          <div class="contact-meta">本部 ／ 総務</div>
+          <div class="contact-id">ID: R-1022</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:obata.miyu@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- システム関連 -->
+  <div class="section" data-section>
+    <div class="section-header open" onclick="toggleSec(this)">
+      <span class="arr">&#9654;</span>システム関連
+    </div>
+    <div class="section-body open"><div class="section-body-inner">
+      <div class="contact-card" data-search="細川澪音 本部 システム">
+        <div class="avatar">細</div>
+        <div class="contact-info">
+          <div class="contact-name">細川 澪音</div>
+          <div class="contact-meta">本部 ／ システム</div>
+          <div class="contact-id">ID: R-1031</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:hosokawa.mione@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="坪井勇樹 本部 システム">
+        <div class="avatar">坪</div>
+        <div class="contact-info">
+          <div class="contact-name">坪井 勇樹</div>
+          <div class="contact-meta">本部 ／ システム</div>
+          <div class="contact-id">ID: R-1032</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:tsuboi.yuki@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 広報関連 -->
+  <div class="section" data-section>
+    <div class="section-header" onclick="toggleSec(this)">
+      <span class="arr">&#9654;</span>広報関連
+    </div>
+    <div class="section-body"><div class="section-body-inner">
+      <div class="contact-card" data-search="嘉本咲楽子 本部 広報">
+        <div class="avatar">嘉</div>
+        <div class="contact-info">
+          <div class="contact-name">嘉本 咲楽子</div>
+          <div class="contact-meta">本部 ／ 広報</div>
+          <div class="contact-id">ID: R-1041</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:kamoto.sarako@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 事業所関連 -->
+  <div class="section" data-section>
+    <div class="section-header" onclick="toggleSec(this)">
+      <span class="arr">&#9654;</span>事業所関連
+    </div>
+    <div class="section-body"><div class="section-body-inner">
+      <div class="contact-card" data-search="大久保充 役員 事業所">
+        <div class="avatar">大</div>
+        <div class="contact-info">
+          <div class="contact-name">大久保 充</div>
+          <div class="contact-meta">役員</div>
+          <div class="contact-id">ID: R-0001</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:okubo.mitsuru@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- スタジオメンバー -->
+  <div class="section" data-section>
+    <div class="section-header" onclick="toggleSec(this)">
+      <span class="arr">&#9654;</span>スタジオメンバー
+    </div>
+    <div class="section-body"><div class="section-body-inner">
+      <div class="contact-card" data-search="大久保充 役員 スタジオ">
+        <div class="avatar">大</div>
+        <div class="contact-info">
+          <div class="contact-name">大久保 充</div>
+          <div class="contact-meta">役員</div>
+          <div class="contact-id">ID: R-0001</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:okubo.mitsuru@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- クリエイティブ系 -->
+  <div class="section" data-section>
+    <div class="section-header" onclick="toggleSec(this)">
+      <span class="arr">&#9654;</span>クリエイティブ系
+    </div>
+    <div class="section-body"><div class="section-body-inner">
+
+      <!-- イラスト -->
+      <div class="sub-header open" onclick="toggleSub(this)"><span class="arr">&#9654;</span>&#127912; イラスト</div>
+      <div class="sub-body open">
+        <div class="contact-card" data-search="坂井美咲 本部 企画 イラスト クリエイティブ">
+          <div class="avatar">坂</div>
+          <div class="contact-info">
+            <div class="contact-name">坂井 美咲</div>
+            <div class="contact-meta">本部 ／ 企画</div>
+            <div class="contact-id">ID: R-2011</div>
+          </div>
+          <div class="contact-actions">
+            <a href="mailto:sakai.misaki@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+            <a href="#" class="action-btn chat">&#128172; チャット</a>
+          </div>
+        </div>
+        <div class="contact-card" data-search="小笠原衣織 本部 制作 イラスト クリエイティブ">
+          <div class="avatar">小</div>
+          <div class="contact-info">
+            <div class="contact-name">小笠原 衣織</div>
+            <div class="contact-meta">本部 ／ 制作</div>
+            <div class="contact-id">ID: R-2012</div>
+          </div>
+          <div class="contact-actions">
+            <a href="mailto:ogasawara.iori@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+            <a href="#" class="action-btn chat">&#128172; チャット</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 動画 -->
+      <div class="sub-header" onclick="toggleSub(this)"><span class="arr">&#9654;</span>&#127909; 動画</div>
+      <div class="sub-body">
+        <div class="contact-card" data-search="坪井勇樹 本部 動画 クリエイティブ">
+          <div class="avatar">坪</div>
+          <div class="contact-info">
+            <div class="contact-name">坪井 勇樹</div>
+            <div class="contact-meta">本部 ／ 動画</div>
+            <div class="contact-id">ID: R-1032</div>
+          </div>
+          <div class="contact-actions">
+            <a href="mailto:tsuboi.yuki@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+            <a href="#" class="action-btn chat">&#128172; チャット</a>
+          </div>
+        </div>
+        <div class="contact-card" data-search="渡辺靖文 本部 動画 クリエイティブ">
+          <div class="avatar">渡</div>
+          <div class="contact-info">
+            <div class="contact-name">渡辺 靖文</div>
+            <div class="contact-meta">本部 ／ 動画</div>
+            <div class="contact-id">ID: R-2021</div>
+          </div>
+          <div class="contact-actions">
+            <a href="mailto:watanabe.yasufumi@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+            <a href="#" class="action-btn chat">&#128172; チャット</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 音楽 -->
+      <div class="sub-header" onclick="toggleSub(this)"><span class="arr">&#9654;</span>&#127925; 音楽</div>
+      <div class="sub-body">
+        <div class="contact-card" data-search="三橋正弥 本部 音楽 クリエイティブ">
+          <div class="avatar">三</div>
+          <div class="contact-info">
+            <div class="contact-name">三橋 正弥</div>
+            <div class="contact-meta">本部 ／ 音楽</div>
+            <div class="contact-id">ID: R-2031</div>
+          </div>
+          <div class="contact-actions">
+            <a href="mailto:mitsuhashi.masaya@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+            <a href="#" class="action-btn chat">&#128172; チャット</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live2D -->
+      <div class="sub-header" onclick="toggleSub(this)"><span class="arr">&#9654;</span>&#128126; Live2D</div>
+      <div class="sub-body">
+        <div class="contact-card" data-search="山崎杏美 千葉中央東口 指導員 Live2D クリエイティブ">
+          <div class="avatar">山</div>
+          <div class="contact-info">
+            <div class="contact-name">山崎 杏美</div>
+            <div class="contact-meta">千葉中央東口 ／ 指導員</div>
+            <div class="contact-id">ID: R-2041</div>
+          </div>
+          <div class="contact-actions">
+            <a href="mailto:yamazaki.ami@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+            <a href="#" class="action-btn chat">&#128172; チャット</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- デザイン -->
+      <div class="sub-header" onclick="toggleSub(this)"><span class="arr">&#9654;</span>&#127912; デザイン</div>
+      <div class="sub-body">
+        <div class="contact-card" data-search="野々垣大希 本部 マネージャー デザイン クリエイティブ">
+          <div class="avatar">野</div>
+          <div class="contact-info">
+            <div class="contact-name">野々垣 大希</div>
+            <div class="contact-meta">本部 ／ マネージャー</div>
+            <div class="contact-id">ID: R-2051</div>
+          </div>
+          <div class="contact-actions">
+            <a href="mailto:nonogaki.daiki@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+            <a href="#" class="action-btn chat">&#128172; チャット</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ハンドメイド -->
+      <div class="sub-header" onclick="toggleSub(this)"><span class="arr">&#9654;</span>&#9986; ハンドメイド</div>
+      <div class="sub-body">
+        <div class="contact-card" data-search="髙橋拓真 さいたま新都心 指導員 ハンドメイド クリエイティブ">
+          <div class="avatar">髙</div>
+          <div class="contact-info">
+            <div class="contact-name">髙橋 拓真</div>
+            <div class="contact-meta">さいたま新都心 ／ 指導員</div>
+            <div class="contact-id">ID: R-2061</div>
+          </div>
+          <div class="contact-actions">
+            <a href="mailto:takahashi.takuma@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+            <a href="#" class="action-btn chat">&#128172; チャット</a>
+          </div>
+        </div>
+      </div>
+
+    </div></div>
+  </div>
+
+  <!-- スキルアッププログラム -->
+  <div class="section" data-section>
+    <div class="section-header" onclick="toggleSec(this)">
+      <span class="arr">&#9654;</span>スキルアッププログラム
+    </div>
+    <div class="section-body"><div class="section-body-inner">
+      <div class="contact-card" data-search="坂井美咲 本部 企画 スキルアップ">
+        <div class="avatar">坂</div>
+        <div class="contact-info">
+          <div class="contact-name">坂井 美咲</div>
+          <div class="contact-meta">本部 ／ 企画</div>
+          <div class="contact-id">ID: R-2011</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:sakai.misaki@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 事業所（個別対応） -->
+  <div class="section" data-section>
+    <div class="section-header" onclick="toggleSec(this)">
+      <span class="arr">&#9654;</span>事業所（個別対応）
+    </div>
+    <div class="section-body"><div class="section-body-inner">
+      <div class="contact-card" data-search="中村有花 にゃんこらぼ サビ管 事業所">
+        <div class="avatar">中</div>
+        <div class="contact-info">
+          <div class="contact-name">中村 有花</div>
+          <div class="contact-meta">にゃんこらぼ ／ サビ管</div>
+          <div class="contact-id">ID: R-3011</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:nakamura.yuka@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="山ノ内香子 浦和 サビ管 事業所">
+        <div class="avatar">山</div>
+        <div class="contact-info">
+          <div class="contact-name">山ノ内 香子</div>
+          <div class="contact-meta">浦和 ／ サビ管</div>
+          <div class="contact-id">ID: R-3012</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:yamanouchi.kyoko@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="伊藤真帆 横浜 サビ管 事業所">
+        <div class="avatar">伊</div>
+        <div class="contact-info">
+          <div class="contact-name">伊藤 真帆</div>
+          <div class="contact-meta">横浜 ／ サビ管</div>
+          <div class="contact-id">ID: R-3013</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:ito.maho@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="森本薫 広島 サビ管 事業所">
+        <div class="avatar">森</div>
+        <div class="contact-info">
+          <div class="contact-name">森本 薫</div>
+          <div class="contact-meta">広島 ／ サビ管</div>
+          <div class="contact-id">ID: R-3014</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:morimoto.kaoru@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="川﨑昭成 千葉中央 サビ管 事業所">
+        <div class="avatar">川</div>
+        <div class="contact-info">
+          <div class="contact-name">川﨑 昭成</div>
+          <div class="contact-meta">千葉中央 ／ サビ管</div>
+          <div class="contact-id">ID: R-3015</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:kawasaki.akinari@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="川那辺美和 千葉中央 サビ管 事業所">
+        <div class="avatar">川</div>
+        <div class="contact-info">
+          <div class="contact-name">川那辺 美和</div>
+          <div class="contact-meta">千葉中央 ／ サビ管</div>
+          <div class="contact-id">ID: R-3016</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:kawanabe.miwa@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="飯塚莉乃 大井町 サビ管 事業所">
+        <div class="avatar">飯</div>
+        <div class="contact-info">
+          <div class="contact-name">飯塚 莉乃</div>
+          <div class="contact-meta">大井町 ／ サビ管</div>
+          <div class="contact-id">ID: R-3017</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:iizuka.rino@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="福村昌成 大宮西口 サビ管 事業所">
+        <div class="avatar">福</div>
+        <div class="contact-info">
+          <div class="contact-name">福村 昌成</div>
+          <div class="contact-meta">大宮西口 ／ サビ管</div>
+          <div class="contact-id">ID: R-3018</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:fukumura.masanari@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="杉浦宗徳 浜松 サビ管 事業所">
+        <div class="avatar">杉</div>
+        <div class="contact-info">
+          <div class="contact-name">杉浦 宗徳</div>
+          <div class="contact-meta">浜松 ／ サビ管</div>
+          <div class="contact-id">ID: R-3019</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:sugiura.munenori@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="石井友晴 浜松 マネージャー 事業所">
+        <div class="avatar">石</div>
+        <div class="contact-info">
+          <div class="contact-name">石井 友晴</div>
+          <div class="contact-meta">浜松 ／ マネージャー</div>
+          <div class="contact-id">ID: R-3020</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:ishii.tomoharu@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="contact-card" data-search="安藤浩子 浜松田町 サビ管 事業所">
+        <div class="avatar">安</div>
+        <div class="contact-info">
+          <div class="contact-name">安藤 浩子</div>
+          <div class="contact-meta">浜松田町 ／ サビ管</div>
+          <div class="contact-id">ID: R-3021</div>
+        </div>
+        <div class="contact-actions">
+          <a href="mailto:ando.hiroko@rashikuru.co.jp" class="action-btn mail">&#9993; メール</a>
+          <a href="#" class="action-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+
+<script>
+function toggleSec(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+function toggleSub(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+function filterCards() {
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  var sections = document.querySelectorAll('[data-section]');
+  var anyVisible = false;
+  sections.forEach(function(sec) {
+    var cards = sec.querySelectorAll('.contact-card');
+    var secVisible = false;
+    cards.forEach(function(card) {
+      var searchText = (card.getAttribute('data-search') + ' ' + card.textContent).toLowerCase();
+      var match = !q || searchText.indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) secVisible = true;
+    });
+    sec.style.display = secVisible ? '' : 'none';
+    if (secVisible) anyVisible = true;
+    // Auto open sections with matches
+    if (secVisible && q) {
+      var hdr = sec.querySelector('.section-header');
+      var bdy = sec.querySelector('.section-body');
+      if (!hdr.classList.contains('open')) { hdr.classList.add('open'); bdy.classList.add('open'); }
+    }
+  });
+  document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
+}
+</script>
+</body>
+</html>
