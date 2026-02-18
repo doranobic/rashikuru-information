@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>総務への相談 - ラシクルinformation</title>
+<style>
+  :root {
+    --primary: #7CB342;
+    --primary-dark: #558B2F;
+    --primary-light: #C5E1A5;
+    --primary-pale: #F1F8E9;
+    --accent: #FF8F00;
+    --text: #333;
+    --text-light: #666;
+    --bg: #F5F5F5;
+    --white: #fff;
+    --border: #E0E0E0;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; font-family: 'Segoe UI','Hiragino Kaku Gothic ProN','Noto Sans JP','Meiryo',sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  .header {
+    background: var(--primary-dark); color: var(--white);
+    padding: 0 20px; display: flex; align-items: center;
+    justify-content: space-between; height: 52px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,.15);
+  }
+  .header-logo {
+    font-size: 16px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    text-decoration: none; color: var(--white);
+  }
+  .header-logo .dot { width: 9px; height: 9px; background: var(--primary-light); border-radius: 50%; }
+  .back-btn {
+    color: var(--white); text-decoration: none; font-size: 13px;
+    padding: 7px 14px; border-radius: 6px; transition: background .2s;
+  }
+  .back-btn:hover { background: rgba(255,255,255,.18); }
+
+  .page-hero {
+    background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
+    color: var(--white); padding: 32px 20px; text-align: center;
+  }
+  .page-hero h1 { font-size: 22px; font-weight: 800; letter-spacing: 2px; }
+  .page-hero p { font-size: 13px; opacity: .85; margin-top: 6px; }
+
+  .container { max-width: 800px; margin: 24px auto; padding: 0 16px; }
+
+  .intro-card {
+    background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 24px; margin-bottom: 24px; text-align: center;
+  }
+  .intro-card p { font-size: 14px; color: var(--text-light); line-height: 1.8; }
+  .intro-card .highlight {
+    display: inline-block; background: #E3F2FD; color: #1565C0;
+    padding: 2px 10px; border-radius: 4px; font-weight: 600; font-size: 13px;
+  }
+
+  .section-label {
+    font-size: 16px; font-weight: 700; color: var(--primary-dark);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+    padding-left: 4px;
+  }
+  .section-label .icon {
+    width: 28px; height: 28px; border-radius: 6px; background: #1565C0;
+    color: var(--white); display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .faq-card {
+    background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+    margin-bottom: 20px; overflow: hidden;
+  }
+
+  .faq-q {
+    display: flex; align-items: center; gap: 10px; padding: 16px 20px;
+    cursor: pointer; font-weight: 600; font-size: 14px; border: none;
+    background: none; width: 100%; text-align: left; color: var(--text);
+    border-bottom: 1px solid #f0f0f0; transition: background .15s;
+  }
+  .faq-q:hover { background: var(--primary-pale); }
+  .faq-q .q-badge {
+    width: 26px; height: 26px; border-radius: 50%; background: #1565C0;
+    color: var(--white); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .faq-q .arr { transition: transform .3s; font-size: 11px; margin-left: auto; color: #999; }
+  .faq-q.open .arr { transform: rotate(90deg); }
+
+  .faq-a {
+    max-height: 0; overflow: hidden; transition: max-height .4s ease;
+  }
+  .faq-a.open { max-height: 600px; }
+  .faq-a-inner {
+    padding: 16px 20px 16px 56px; font-size: 13px; color: var(--text-light);
+    line-height: 1.9; border-bottom: 1px solid #f5f5f5;
+  }
+  .faq-a-inner strong { color: var(--text); }
+  .faq-a-inner .step {
+    display: inline-block; background: var(--primary-pale); color: var(--primary-dark);
+    padding: 1px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 4px;
+  }
+
+  /* Contact box at bottom */
+  .contact-box {
+    background: linear-gradient(135deg, #FFF8E1 0%, #FFF3E0 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius); padding: 28px; margin-top: 32px;
+    text-align: center;
+  }
+  .contact-box h3 {
+    font-size: 16px; color: #E65100; margin-bottom: 6px;
+  }
+  .contact-box .sub { font-size: 13px; color: var(--text-light); margin-bottom: 20px; }
+  .contact-persons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .person-card {
+    background: var(--white); border-radius: 10px; padding: 18px 24px;
+    box-shadow: var(--shadow); min-width: 220px; text-align: center;
+  }
+  .person-avatar {
+    width: 48px; height: 48px; border-radius: 50%; background: #1565C0;
+    color: var(--white); display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; margin: 0 auto 10px;
+  }
+  .person-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .person-dept { font-size: 11px; color: var(--text-light); margin-bottom: 2px; }
+  .person-id { font-size: 10px; color: #999; font-family: monospace; margin-bottom: 10px; }
+  .person-actions { display: flex; gap: 6px; justify-content: center; }
+  .act-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 14px; border-radius: 6px;
+    font-size: 12px; text-decoration: none; font-weight: 600;
+    transition: opacity .2s;
+  }
+  .act-btn:hover { opacity: .85; }
+  .act-btn.mail { background: #1565C0; color: var(--white); }
+  .act-btn.chat { background: var(--primary); color: var(--white); }
+
+  @media (max-width: 640px) {
+    .contact-persons { flex-direction: column; align-items: center; }
+    .person-card { width: 100%; min-width: unset; }
+    .faq-a-inner { padding-left: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="https://doranobic.github.io/rashikuru-information/embed-all.html" class="header-logo"><span class="dot"></span>ラシクルinformation</a>
+  <a href="https://doranobic.github.io/rashikuru-information/contact.html" class="back-btn">&#9664; 相談・連絡へ戻る</a>
+</header>
+
+<section class="page-hero">
+  <h1>&#128203; 総務への相談</h1>
+  <p>よくある質問をまとめました。まずはこちらをご確認ください。</p>
+</section>
+
+<div class="container">
+
+  <div class="intro-card">
+    <p>総務部では <span class="highlight">備品・設備</span> <span class="highlight">郵便・届出</span> <span class="highlight">オフィス環境</span> <span class="highlight">社内ルール</span> に関するお問い合わせを受け付けています。<br>
+    以下のQ&Aで解決できることが多いので、まずはご確認ください。</p>
+  </div>
+
+  <div class="section-label"><span class="icon">&#128218;</span>備品・消耗品</div>
+  <div class="faq-card">
+    <button class="faq-q open" onclick="tf(this)"><span class="q-badge">Q</span>事務用品や消耗品がなくなった場合は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a open"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> 各フロアの備品棚をまず確認してください。<br>
+      <span class="step">STEP 2</span> 在庫がない場合は、備品管理シートに品名と数量を記入してください。<br>
+      <span class="step">STEP 3</span> 総務が週次でまとめて発注します（毎週水曜締め）。<br>
+      <strong>※ 急ぎの場合は総務まで直接ご連絡ください。</strong>
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>パソコンやモニターなど高額備品の購入は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> 備品購入申請フォーム（マイページ＞備品管理）から申請してください。<br>
+      <span class="step">STEP 2</span> <strong>5,000円未満</strong>：上長承認のみ<br>
+      <span class="step">STEP 3</span> <strong>5,000円以上</strong>：上長承認＋総務部承認が必要です。<br>
+      通常、承認後3〜5営業日でお届けします。
+    </div></div>
+  </div>
+
+  <div class="section-label"><span class="icon">&#127968;</span>オフィス・施設</div>
+  <div class="faq-card">
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>エアコンの温度を変えたい・不具合がある<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      各フロアのリモコンで調整可能です。<strong>夏場は26℃、冬場は22℃</strong>が推奨温度です。<br>
+      故障・異音がある場合は総務までご連絡ください。業者手配を行います。
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>照明が切れている・トイレの設備不良<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      総務までお知らせください。場所と状況を伝えていただければ、<strong>原則当日〜翌営業日</strong>で対応します。<br>
+      緊急の場合（水漏れ等）は内線またはチャットで即時ご連絡ください。
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>来客用の駐車場を使いたい<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      来客用駐車場は<strong>事前予約制</strong>です。<br>
+      <span class="step">STEP 1</span> 来客日の前日までに総務へ連絡（来客名・日時・台数）<br>
+      <span class="step">STEP 2</span> 総務から駐車場番号をお伝えします。
+    </div></div>
+  </div>
+
+  <div class="section-label"><span class="icon">&#128232;</span>郵便・届出</div>
+  <div class="faq-card">
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>会社宛の郵便物・宅配便が届いたら？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      総務で受け取り、<strong>各フロアの受取ボックス</strong>に仕分けしています。<br>
+      不在時に届いた私的荷物は受け取れません。個人宛の荷物は自宅宛に送るようにしてください。
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>社用の郵便物・宅配便を出したい<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> 総務の発送コーナーに差出票と荷物を置いてください。<br>
+      <span class="step">STEP 2</span> 午前中に依頼 → 当日発送 ／ 午後に依頼 → 翌営業日発送です。<br>
+      <strong>※ 着払い・代引きの場合は事前に総務までご連絡ください。</strong>
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>住所変更・通勤経路変更の届出は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      マイページ＞申請・届出から変更届を提出してください。<br>
+      <strong>変更後10日以内</strong>に届出をお願いします。通勤手当の再計算が発生する場合があります。
+    </div></div>
+  </div>
+
+  <div class="section-label"><span class="icon">&#128221;</span>社内ルール・その他</div>
+  <div class="faq-card">
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>名刺を発注したい<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      名刺発注フォーム（社内管理部門＞デザイン・ブランド）から申請してください。<br>
+      <strong>通常100枚単位</strong>で発注可能です。デザイン変更がある場合は広報チームへ。<br>
+      発注から<strong>約1週間</strong>でお届けします。
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>社用車を使いたい<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      社用車は<strong>Googleカレンダーで予約制</strong>です。<br>
+      <span class="step">STEP 1</span> カレンダーの「社用車」リソースを選択して予約<br>
+      <span class="step">STEP 2</span> 鍵は総務カウンターで受け渡し<br>
+      <span class="step">STEP 3</span> 使用後は走行距離を運転日報に記入し、鍵を返却してください。
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>防災・避難訓練について知りたい<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      防災訓練は<strong>年2回（6月・12月）</strong>実施しています。<br>
+      各フロアの避難経路図は掲示板に掲示済みです。AEDは1Fエントランス横に設置しています。<br>
+      不明点は総務までお気軽にどうぞ。
+    </div></div>
+  </div>
+
+  <!-- Contact box -->
+  <div class="contact-box">
+    <h3>&#128161; 解決しませんでしたか？</h3>
+    <p class="sub">上記で解決しない場合は、お気軽に総務チームまで直接ご連絡ください。</p>
+    <div class="contact-persons">
+      <div class="person-card">
+        <div class="person-avatar">矢</div>
+        <div class="person-name">矢谷 綾香</div>
+        <div class="person-dept">本部 ／ 総務</div>
+        <div class="person-id">ID: R-1021</div>
+        <div class="person-actions">
+          <a href="mailto:yatani.ayaka@rashikuru.co.jp" class="act-btn mail">&#9993; メール</a>
+          <a href="#" class="act-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="person-card">
+        <div class="person-avatar">小</div>
+        <div class="person-name">小幡 美優</div>
+        <div class="person-dept">本部 ／ 総務</div>
+        <div class="person-id">ID: R-1022</div>
+        <div class="person-actions">
+          <a href="mailto:obata.miyu@rashikuru.co.jp" class="act-btn mail">&#9993; メール</a>
+          <a href="#" class="act-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function tf(e){e.classList.toggle('open');e.nextElementSibling.classList.toggle('open')}
+</script>
+</body>
+</html>

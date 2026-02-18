@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>システム関連の相談 - ラシクルinformation</title>
+<style>
+  :root {
+    --primary: #7CB342;
+    --primary-dark: #558B2F;
+    --primary-light: #C5E1A5;
+    --primary-pale: #F1F8E9;
+    --accent: #FF8F00;
+    --text: #333;
+    --text-light: #666;
+    --bg: #F5F5F5;
+    --white: #fff;
+    --border: #E0E0E0;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; font-family: 'Segoe UI','Hiragino Kaku Gothic ProN','Noto Sans JP','Meiryo',sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  .header {
+    background: var(--primary-dark); color: var(--white);
+    padding: 0 20px; display: flex; align-items: center;
+    justify-content: space-between; height: 52px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,.15);
+  }
+  .header-logo {
+    font-size: 16px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    text-decoration: none; color: var(--white);
+  }
+  .header-logo .dot { width: 9px; height: 9px; background: var(--primary-light); border-radius: 50%; }
+  .back-btn {
+    color: var(--white); text-decoration: none; font-size: 13px;
+    padding: 7px 14px; border-radius: 6px; transition: background .2s;
+  }
+  .back-btn:hover { background: rgba(255,255,255,.18); }
+
+  .page-hero {
+    background: linear-gradient(135deg, #37474F 0%, #263238 100%);
+    color: var(--white); padding: 32px 20px; text-align: center;
+  }
+  .page-hero h1 { font-size: 22px; font-weight: 800; letter-spacing: 2px; }
+  .page-hero p { font-size: 13px; opacity: .85; margin-top: 6px; }
+
+  .container { max-width: 800px; margin: 24px auto; padding: 0 16px; }
+
+  .intro-card {
+    background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 24px; margin-bottom: 24px; text-align: center;
+  }
+  .intro-card p { font-size: 14px; color: var(--text-light); line-height: 1.8; }
+  .intro-card .highlight {
+    display: inline-block; background: #ECEFF1; color: #37474F;
+    padding: 2px 10px; border-radius: 4px; font-weight: 600; font-size: 13px;
+  }
+
+  .section-label {
+    font-size: 16px; font-weight: 700; color: var(--primary-dark);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+    padding-left: 4px;
+  }
+  .section-label .icon {
+    width: 28px; height: 28px; border-radius: 6px; background: #37474F;
+    color: var(--white); display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .faq-card {
+    background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+    margin-bottom: 20px; overflow: hidden;
+  }
+
+  .faq-q {
+    display: flex; align-items: center; gap: 10px; padding: 16px 20px;
+    cursor: pointer; font-weight: 600; font-size: 14px; border: none;
+    background: none; width: 100%; text-align: left; color: var(--text);
+    border-bottom: 1px solid #f0f0f0; transition: background .15s;
+  }
+  .faq-q:hover { background: var(--primary-pale); }
+  .faq-q .q-badge {
+    width: 26px; height: 26px; border-radius: 50%; background: #37474F;
+    color: var(--white); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .faq-q .arr { transition: transform .3s; font-size: 11px; margin-left: auto; color: #999; }
+  .faq-q.open .arr { transform: rotate(90deg); }
+
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
+  .faq-a.open { max-height: 600px; }
+  .faq-a-inner {
+    padding: 16px 20px 16px 56px; font-size: 13px; color: var(--text-light);
+    line-height: 1.9; border-bottom: 1px solid #f5f5f5;
+  }
+  .faq-a-inner strong { color: var(--text); }
+  .faq-a-inner .step {
+    display: inline-block; background: #ECEFF1; color: #37474F;
+    padding: 1px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 4px;
+  }
+  .faq-a-inner code {
+    background: #ECEFF1; padding: 2px 6px; border-radius: 3px;
+    font-size: 12px; font-family: 'Consolas', monospace;
+  }
+
+  .contact-box {
+    background: linear-gradient(135deg, #FFF8E1 0%, #FFF3E0 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius); padding: 28px; margin-top: 32px;
+    text-align: center;
+  }
+  .contact-box h3 { font-size: 16px; color: #E65100; margin-bottom: 6px; }
+  .contact-box .sub { font-size: 13px; color: var(--text-light); margin-bottom: 20px; }
+  .contact-persons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .person-card {
+    background: var(--white); border-radius: 10px; padding: 18px 24px;
+    box-shadow: var(--shadow); min-width: 220px; text-align: center;
+  }
+  .person-avatar {
+    width: 48px; height: 48px; border-radius: 50%; background: #37474F;
+    color: var(--white); display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; margin: 0 auto 10px;
+  }
+  .person-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .person-dept { font-size: 11px; color: var(--text-light); margin-bottom: 2px; }
+  .person-id { font-size: 10px; color: #999; font-family: monospace; margin-bottom: 10px; }
+  .person-actions { display: flex; gap: 6px; justify-content: center; }
+  .act-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 14px; border-radius: 6px;
+    font-size: 12px; text-decoration: none; font-weight: 600;
+    transition: opacity .2s;
+  }
+  .act-btn:hover { opacity: .85; }
+  .act-btn.mail { background: #37474F; color: var(--white); }
+  .act-btn.chat { background: var(--primary); color: var(--white); }
+
+  @media (max-width: 640px) {
+    .contact-persons { flex-direction: column; align-items: center; }
+    .person-card { width: 100%; min-width: unset; }
+    .faq-a-inner { padding-left: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="https://doranobic.github.io/rashikuru-information/embed-all.html" class="header-logo"><span class="dot"></span>ラシクルinformation</a>
+  <a href="https://doranobic.github.io/rashikuru-information/contact.html" class="back-btn">&#9664; 相談・連絡へ戻る</a>
+</header>
+
+<section class="page-hero">
+  <h1>&#128421; システム関連の相談</h1>
+  <p>PC・アカウント・ネットワークのトラブルはまずこちらをご確認ください。</p>
+</section>
+
+<div class="container">
+
+  <div class="intro-card">
+    <p>システムチームでは <span class="highlight">PC・端末</span> <span class="highlight">アカウント・パスワード</span> <span class="highlight">ネットワーク</span> <span class="highlight">ソフトウェア</span> に関するサポートを行っています。<br>
+    多くのトラブルは以下の手順で解決できます。</p>
+  </div>
+
+  <div class="section-label"><span class="icon">&#128187;</span>PC・端末トラブル</div>
+  <div class="faq-card">
+    <button class="faq-q open" onclick="tf(this)"><span class="q-badge">Q</span>PCが起動しない・フリーズした<span class="arr">&#9654;</span></button>
+    <div class="faq-a open"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> 電源ボタンを<strong>10秒間長押し</strong>して強制シャットダウンしてください。<br>
+      <span class="step">STEP 2</span> 30秒待ってから再度電源を入れてください。<br>
+      <span class="step">STEP 3</span> 改善しない場合は、電源ケーブル・ACアダプタを抜き差ししてください。<br>
+      <strong>※ それでも起動しない場合はシステムチームへご連絡ください。代替機を用意します。</strong>
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>PCの動作が重い・遅い<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      まず以下をお試しください：<br>
+      <span class="step">1</span> 不要なタブ・アプリを閉じる（Chrome のタブは30個以下推奨）<br>
+      <span class="step">2</span> PCを<strong>再起動</strong>する（スリープではなく再起動）<br>
+      <span class="step">3</span> Windowsアップデートが溜まっていないか確認<br>
+      <strong>それでも改善しない場合</strong>はシステムチームでメモリ・ストレージを確認します。
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>新しいソフトウェアをインストールしたい<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      セキュリティの観点から、<strong>個人でのインストールは原則禁止</strong>です。<br>
+      <span class="step">STEP 1</span> システムチームにソフト名と利用目的を連絡<br>
+      <span class="step">STEP 2</span> セキュリティ確認後、システムチームがインストールします。<br>
+      ※ Adobe CC、Office等の既存ライセンスソフトは即日対応可能です。
+    </div></div>
+  </div>
+
+  <div class="section-label"><span class="icon">&#128272;</span>アカウント・パスワード</div>
+  <div class="faq-card">
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>パスワードを忘れた・ロックされた<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> まず<strong>Googleアカウントの「パスワードをお忘れですか？」</strong>からリセットをお試しください。<br>
+      <span class="step">STEP 2</span> リセットできない場合はシステムチームに連絡してください。<br>
+      <span class="step">STEP 3</span> 本人確認の上、パスワードリセットを行います。<br>
+      <strong>※ リセット後は速やかに新しいパスワードを設定してください。</strong>
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>新しいGoogleアカウント（メールアドレス）がほしい<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      プロジェクト用・共有用のアカウントが必要な場合：<br>
+      <span class="step">STEP 1</span> 利用目的・希望アドレスをシステムチームに連絡<br>
+      <span class="step">STEP 2</span> 管理者承認後、<strong>1〜2営業日</strong>で発行します。<br>
+      ※ 個人の社用アカウント（@rashikuru.co.jp）は入社時に自動発行済みです。
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>退職者のアカウント停止・データ引き継ぎ<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      退職日が確定したら、<strong>上長からシステムチームへ連絡</strong>してください。<br>
+      <span class="step">1</span> 退職日にアカウントを停止<br>
+      <span class="step">2</span> Google Driveのデータは引き継ぎ先に移管可能<br>
+      <span class="step">3</span> 共有ドライブのデータはそのまま残ります。
+    </div></div>
+  </div>
+
+  <div class="section-label"><span class="icon">&#128246;</span>ネットワーク・Wi-Fi</div>
+  <div class="faq-card">
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>Wi-Fiに繋がらない<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> Wi-Fiを一度<strong>オフ→オン</strong>してください。<br>
+      <span class="step">STEP 2</span> 接続先が正しいか確認（SSID: <code>Rashikuru-Office</code>）<br>
+      <span class="step">STEP 3</span> 改善しない場合はPCを再起動してください。<br>
+      <strong>※ フロア全体で繋がらない場合はルーター障害の可能性があります。すぐにシステムチームへ。</strong>
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>VPN接続の方法がわからない<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      在宅勤務時にVPNが必要な場合：<br>
+      <span class="step">STEP 1</span> タスクトレイのVPNアイコンをクリック<br>
+      <span class="step">STEP 2</span> 社用アカウントでログイン<br>
+      <span class="step">STEP 3</span> 「接続」をクリック<br>
+      ※ VPNクライアントが未インストールの場合はシステムチームに連絡してください。
+    </div></div>
+  </div>
+
+  <div class="section-label"><span class="icon">&#128424;</span>プリンター・周辺機器</div>
+  <div class="faq-card">
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>プリンターで印刷できない<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> プリンターの電源が入っているか確認<br>
+      <span class="step">STEP 2</span> 用紙切れ・紙詰まりの表示がないか確認<br>
+      <span class="step">STEP 3</span> PCのプリンター設定で正しいプリンターが選択されているか確認<br>
+      <strong>※ 紙詰まりの解消方法がわからない場合は無理せずシステムチームへ。</strong>
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>外部モニターが映らない<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> ケーブルを抜き差ししてください（HDMI / USB-C）<br>
+      <span class="step">STEP 2</span> <code>Windows + P</code> キーを押して「拡張」または「複製」を選択<br>
+      <span class="step">STEP 3</span> 改善しない場合は別のケーブルで試してみてください。<br>
+      ※ ケーブルの予備は総務カウンターにあります。
+    </div></div>
+  </div>
+
+  <!-- Contact box -->
+  <div class="contact-box">
+    <h3>&#128161; 解決しませんでしたか？</h3>
+    <p class="sub">上記で解決しない場合は、システムチームに直接お問い合わせください。<br>なるべく<strong>症状・エラーメッセージ・いつから発生しているか</strong>を添えてご連絡いただけると助かります。</p>
+    <div class="contact-persons">
+      <div class="person-card">
+        <div class="person-avatar">細</div>
+        <div class="person-name">細川 澪音</div>
+        <div class="person-dept">本部 ／ システム</div>
+        <div class="person-id">ID: R-1031</div>
+        <div class="person-actions">
+          <a href="mailto:hosokawa.mione@rashikuru.co.jp" class="act-btn mail">&#9993; メール</a>
+          <a href="#" class="act-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+      <div class="person-card">
+        <div class="person-avatar">坪</div>
+        <div class="person-name">坪井 勇樹</div>
+        <div class="person-dept">本部 ／ システム</div>
+        <div class="person-id">ID: R-1032</div>
+        <div class="person-actions">
+          <a href="mailto:tsuboi.yuki@rashikuru.co.jp" class="act-btn mail">&#9993; メール</a>
+          <a href="#" class="act-btn chat">&#128172; チャット</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function tf(e){e.classList.toggle('open');e.nextElementSibling.classList.toggle('open')}
+</script>
+</body>
+</html>
