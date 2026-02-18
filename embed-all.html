@@ -96,11 +96,48 @@
 
   /* Search */
   .search-desc { font-size: 12px; color: var(--text-light); margin-bottom: 8px; }
+  .search-wrap { position: relative; }
   .search-box {
-    width: 100%; padding: 9px 12px; border: 2px solid var(--border);
+    width: 100%; padding: 9px 12px 9px 34px; border: 2px solid var(--border);
     border-radius: 8px; font-size: 13px; outline: none; transition: border-color .2s;
   }
   .search-box:focus { border-color: var(--primary); }
+  .search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    font-size: 14px; color: #999; pointer-events: none;
+  }
+  .search-clear {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; font-size: 16px; color: #999;
+    cursor: pointer; display: none; padding: 2px 4px;
+  }
+  .search-clear:hover { color: var(--text); }
+  .search-results {
+    display: none; margin-top: 10px; max-height: 400px; overflow-y: auto;
+    border: 1px solid var(--border); border-radius: 8px; background: var(--white);
+  }
+  .search-results::-webkit-scrollbar { width: 5px; }
+  .search-results::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
+  .sr-count { font-size: 11px; color: var(--text-light); padding: 8px 12px; border-bottom: 1px solid #f0f0f0; }
+  .sr-item {
+    display: block; padding: 10px 12px; border-bottom: 1px solid #f5f5f5;
+    text-decoration: none; color: var(--text); font-size: 12px; transition: background .15s;
+  }
+  .sr-item:last-child { border-bottom: none; }
+  .sr-item:hover { background: var(--primary-pale); }
+  .sr-cat {
+    display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px;
+    margin-right: 6px; font-weight: 600;
+  }
+  .sr-cat.cat-info { background: #E3F2FD; color: #1565C0; }
+  .sr-cat.cat-link { background: #E8F5E9; color: #2E7D32; }
+  .sr-cat.cat-faq { background: #FFF3E0; color: #E65100; }
+  .sr-cat.cat-hub { background: #F3E5F5; color: #7B1FA2; }
+  .sr-cat.cat-news { background: #FFEBEE; color: #C62828; }
+  .sr-title { font-weight: 600; }
+  .sr-title mark { background: #FFEE58; color: var(--text); border-radius: 2px; padding: 0 1px; }
+  .sr-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+  .sr-empty { padding: 20px; text-align: center; color: var(--text-light); font-size: 13px; }
 
   /* Accordion */
   .acc-h {
@@ -261,8 +298,13 @@
   <div class="left">
     <div class="card">
       <div class="card-title"><span class="icon green">&#128269;</span>検索</div>
-      <p class="search-desc">ポータル内を検索</p>
-      <input type="text" class="search-box" placeholder="キーワードを入力">
+      <p class="search-desc">ポータル内のリンク・FAQ・カテゴリを検索</p>
+      <div class="search-wrap">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" class="search-box" id="portalSearch" placeholder="キーワードを入力" oninput="portalSearchHandler()" autocomplete="off">
+        <button class="search-clear" id="searchClear" onclick="clearSearch()">&#10005;</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
     </div>
 
     <div class="card">
@@ -689,6 +731,191 @@ function fetchBlogger(label, targetId, loadingId, max) {
 // 社内通達 = ラベル「通達」、社内ニュース = ラベル「ニュース」で取得
 fetchBlogger('通達', 'noticeList', 'noticeLoading', 10);
 fetchBlogger('ニュース', 'newsList', 'newsLoading', 10);
+
+/* ==========================================
+   ポータル内検索
+   ========================================== */
+function buildSearchIndex() {
+  var idx = [];
+  // 1. Accordion items (社内管理部門 + 各種情報カテゴリ)
+  document.querySelectorAll('.acc-i').forEach(function(el) {
+    var section = '';
+    var card = el.closest('.card');
+    if (card) {
+      var title = card.querySelector('.card-title');
+      if (title) section = title.textContent.trim();
+    }
+    var parent = el.closest('.acc-b');
+    var parentHeader = parent ? parent.previousElementSibling : null;
+    var category = parentHeader ? parentHeader.textContent.trim().replace('▶','').trim() : '';
+    idx.push({
+      text: el.textContent.trim(),
+      cat: 'info', catLabel: section,
+      sub: category,
+      href: el.getAttribute('href'),
+      target: el.getAttribute('target') || ''
+    });
+  });
+  // 2. Hub buttons
+  document.querySelectorAll('.hub-btn').forEach(function(el) {
+    idx.push({
+      text: el.textContent.trim(),
+      cat: 'hub', catLabel: 'マイページ・拠点ハブ',
+      sub: '',
+      href: el.getAttribute('href'),
+      target: el.getAttribute('target') || ''
+    });
+  });
+  // 3. Link items (各種リンク集)
+  document.querySelectorAll('.lg-i').forEach(function(el) {
+    idx.push({
+      text: el.textContent.trim(),
+      cat: 'link', catLabel: '各種リンク集',
+      sub: 'ツール',
+      href: el.getAttribute('href'),
+      target: el.getAttribute('target') || ''
+    });
+  });
+  // 4. SNS rows
+  document.querySelectorAll('.sns-row').forEach(function(el) {
+    var name = el.querySelector('.sns-name');
+    var nameText = name ? name.textContent.trim() : '';
+    var badges = el.querySelectorAll('.sns-badge');
+    var links = [];
+    badges.forEach(function(b) { links.push(b.textContent.trim()); });
+    // find parent toggle label
+    var parentLg = el.closest('.lg-b');
+    var parentLabel = '';
+    if (parentLg && parentLg.previousElementSibling) {
+      parentLabel = parentLg.previousElementSibling.textContent.trim().replace('▶','').replace('▼','').trim();
+    }
+    if (nameText || links.length) {
+      idx.push({
+        text: nameText || links.join(' '),
+        cat: 'link', catLabel: '各種リンク集',
+        sub: parentLabel,
+        href: badges.length ? badges[0].getAttribute('href') : '#',
+        target: '_blank'
+      });
+    }
+  });
+  // 5. FAQ items
+  document.querySelectorAll('.faq-q').forEach(function(el) {
+    var answer = el.nextElementSibling;
+    var answerText = answer ? answer.textContent.trim().substring(0, 80) : '';
+    idx.push({
+      text: el.textContent.replace('Q','').trim(),
+      cat: 'faq', catLabel: 'FAQ',
+      sub: answerText + '...',
+      href: null,
+      faqEl: el
+    });
+  });
+  return idx;
+}
+
+var searchIndex = null;
+var searchTimer = null;
+
+function portalSearchHandler() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(doSearch, 200);
+}
+
+function doSearch() {
+  var q = document.getElementById('portalSearch').value.trim().toLowerCase();
+  var results = document.getElementById('searchResults');
+  var clearBtn = document.getElementById('searchClear');
+
+  if (!q) { results.style.display = 'none'; clearBtn.style.display = 'none'; return; }
+  clearBtn.style.display = 'block';
+
+  if (!searchIndex) searchIndex = buildSearchIndex();
+
+  var matches = [];
+  searchIndex.forEach(function(item) {
+    var searchable = (item.text + ' ' + item.catLabel + ' ' + item.sub).toLowerCase();
+    if (searchable.indexOf(q) !== -1) matches.push(item);
+  });
+
+  // Also search Blogger feed items that have been loaded
+  document.querySelectorAll('.feed-item').forEach(function(el) {
+    var titleEl = el.querySelector('.fi-t');
+    var dateEl = el.querySelector('.fi-d');
+    var detEl = el.querySelector('.det');
+    if (!titleEl) return;
+    var txt = titleEl.textContent.trim();
+    if (txt.toLowerCase().indexOf(q) !== -1) {
+      var catEl = el.querySelector('.cat');
+      matches.push({
+        text: txt,
+        cat: 'news', catLabel: catEl ? catEl.textContent.trim() : 'ニュース',
+        sub: dateEl ? dateEl.textContent.trim() : '',
+        href: detEl ? detEl.getAttribute('href') : '#',
+        target: '_blank'
+      });
+    }
+  });
+
+  var html = '';
+  if (matches.length === 0) {
+    html = '<div class="sr-empty">「' + escHtml(q) + '」に一致する項目が見つかりません</div>';
+  } else {
+    html = '<div class="sr-count">' + matches.length + ' 件見つかりました</div>';
+    matches.forEach(function(m, i) {
+      if (i >= 30) return; // limit display
+      var catClass = 'cat-' + m.cat;
+      var highlighted = highlightText(m.text, q);
+      if (m.href && m.href !== '#') {
+        html += '<a href="' + escHtml(m.href) + '" target="' + (m.target||'') + '" class="sr-item">';
+      } else if (m.faqEl) {
+        html += '<a href="javascript:void(0)" onclick="openFaqResult(' + i + ')" class="sr-item">';
+      } else {
+        html += '<div class="sr-item">';
+      }
+      html += '<span class="sr-cat ' + catClass + '">' + escHtml(m.catLabel) + '</span>';
+      html += '<span class="sr-title">' + highlighted + '</span>';
+      if (m.sub) html += '<div class="sr-sub">' + escHtml(m.sub) + '</div>';
+      if (m.href && m.href !== '#') { html += '</a>'; }
+      else if (m.faqEl) { html += '</a>'; }
+      else { html += '</div>'; }
+    });
+  }
+  results.innerHTML = html;
+  results.style.display = 'block';
+
+  // Store matches for FAQ click handler
+  window._searchMatches = matches;
+}
+
+function openFaqResult(i) {
+  var m = window._searchMatches[i];
+  if (m && m.faqEl) {
+    m.faqEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!m.faqEl.nextElementSibling.classList.contains('open')) {
+      m.faqEl.nextElementSibling.classList.add('open');
+    }
+    m.faqEl.style.background = '#FFEE58';
+    setTimeout(function() { m.faqEl.style.background = ''; }, 2000);
+  }
+}
+
+function clearSearch() {
+  document.getElementById('portalSearch').value = '';
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchClear').style.display = 'none';
+}
+
+function escHtml(s) {
+  var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+}
+
+function highlightText(text, q) {
+  var safe = escHtml(text);
+  var qSafe = escHtml(q);
+  var re = new RegExp('(' + qSafe.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+  return safe.replace(re, '<mark>$1</mark>');
+}
 </script>
 </body>
 </html>
