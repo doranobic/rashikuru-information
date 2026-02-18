@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Meiryo', sans-serif;
+    padding: 20px; background: #fff;
+  }
+  .card-title {
+    font-size: 16px; font-weight: 700; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px; color: #558B2F;
+  }
+  .icon {
+    width: 24px; height: 24px; background: #7CB342; color: #fff;
+    border-radius: 6px; display: flex; align-items: center;
+    justify-content: center; font-size: 13px;
+  }
+  .desc { font-size: 13px; color: #666; margin-bottom: 10px; }
+  .accordion-header {
+    display: flex; align-items: center; gap: 8px; padding: 10px 0;
+    cursor: pointer; font-weight: 600; font-size: 14px; border: none;
+    background: none; width: 100%; text-align: left; color: #333;
+    border-bottom: 1px solid #E0E0E0; transition: color 0.2s;
+  }
+  .accordion-header:hover { color: #558B2F; }
+  .arrow { transition: transform 0.3s; font-size: 12px; }
+  .accordion-header.open .arrow { transform: rotate(90deg); }
+  .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .accordion-body.open { max-height: 500px; }
+  .item {
+    display: block; padding: 10px 16px; font-size: 13px; color: #333;
+    text-decoration: none; border-bottom: 1px solid #f0f0f0; transition: background 0.15s;
+  }
+  .item:hover { background: #F1F8E9; color: #558B2F; }
+</style>
+</head>
+<body>
+  <div class="card-title"><span class="icon">&#128193;</span>社内管理部門からの情報</div>
+  <p class="desc">カテゴリ名をクリックするとリンクが展開</p>
+
+  <div>
+    <button class="accordion-header open" onclick="toggle(this)">
+      <span class="arrow">&#9654;</span>人事・労務
+    </button>
+    <div class="accordion-body open">
+      <a href="#" class="item">就業規則（最新版）</a>
+      <a href="#" class="item">給与/休暇の手引き</a>
+      <a href="#" class="item">入社・退職フロー</a>
+    </div>
+  </div>
+  <div>
+    <button class="accordion-header" onclick="toggle(this)">
+      <span class="arrow">&#9654;</span>総務・施設
+    </button>
+    <div class="accordion-body">
+      <a href="#" class="item">備品購入申請</a>
+      <a href="#" class="item">会議室予約</a>
+      <a href="#" class="item">施設利用ガイド</a>
+    </div>
+  </div>
+  <div>
+    <button class="accordion-header" onclick="toggle(this)">
+      <span class="arrow">&#9654;</span>経理
+    </button>
+    <div class="accordion-body">
+      <a href="#" class="item">経費精算マニュアル</a>
+      <a href="#" class="item">請求書処理フロー</a>
+    </div>
+  </div>
+
+  <script>
+  function toggle(el) {
+    el.classList.toggle('open');
+    el.nextElementSibling.classList.toggle('open');
+  }
+  </script>
+</body>
+</html>

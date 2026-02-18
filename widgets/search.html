@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Meiryo', sans-serif;
+    padding: 20px;
+    background: #fff;
+  }
+  .card-title {
+    font-size: 16px; font-weight: 700; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px; color: #558B2F;
+  }
+  .icon {
+    width: 24px; height: 24px; background: #7CB342; color: #fff;
+    border-radius: 6px; display: flex; align-items: center;
+    justify-content: center; font-size: 13px;
+  }
+  .desc { font-size: 13px; color: #666; margin-bottom: 10px; }
+  .search-box {
+    width: 100%; padding: 10px 14px; border: 2px solid #E0E0E0;
+    border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s;
+  }
+  .search-box:focus { border-color: #7CB342; }
+</style>
+</head>
+<body>
+  <div class="card-title"><span class="icon">&#128269;</span>検索</div>
+  <p class="desc">ポータル内を検索</p>
+  <input type="text" class="search-box" placeholder="キーワードを入力">
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Meiryo', sans-serif;
+    padding: 20px; background: #fff;
+  }
+  .card-title {
+    font-size: 16px; font-weight: 700; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px; color: #558B2F;
+  }
+  .icon {
+    width: 24px; height: 24px; background: #7CB342; color: #fff;
+    border-radius: 6px; display: flex; align-items: center;
+    justify-content: center; font-size: 13px;
+  }
+  .cal-header {
+    text-align: center; font-weight: 700; font-size: 15px; margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+  }
+  .nav-btn {
+    background: none; border: 1px solid #E0E0E0; border-radius: 6px;
+    padding: 4px 10px; cursor: pointer; font-size: 14px; transition: all 0.2s;
+  }
+  .nav-btn:hover { border-color: #7CB342; background: #F1F8E9; }
+  table {
+    width: 100%; border-collapse: collapse; text-align: center; font-size: 13px;
+  }
+  th { padding: 6px; font-weight: 600; color: #666; font-size: 12px; }
+  td { padding: 8px 6px; cursor: default; }
+  td.today {
+    background: #7CB342; color: #fff; font-weight: 700; border-radius: 50%;
+  }
+  td.sat { color: #1976D2; }
+  td.sun { color: #D32F2F; }
+  .note {
+    margin-top: 12px; font-size: 12px; color: #666; text-align: center;
+    padding: 8px; background: #FFF8E1; border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="card-title"><span class="icon">&#128197;</span>カレンダー</div>
+
+  <div class="cal-header">
+    <button class="nav-btn" onclick="changeMonth(-1)">&lt;</button>
+    <span id="monthLabel"></span>
+    <button class="nav-btn" onclick="changeMonth(1)">&gt;</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="sun" style="color:#D32F2F">日</th><th>月</th><th>火</th>
+        <th>水</th><th>木</th><th>金</th><th class="sat" style="color:#1976D2">土</th>
+      </tr>
+    </thead>
+    <tbody id="calBody"></tbody>
+  </table>
+
+  <p class="note">※ Googleカレンダー埋め込みに置き換え可能</p>
+
+  <script>
+  let currentYear = 2026, currentMonth = 2;
+  function render() {
+    const today = new Date();
+    document.getElementById('monthLabel').textContent = currentYear + '年 ' + currentMonth + '月';
+    const first = new Date(currentYear, currentMonth - 1, 1).getDay();
+    const days = new Date(currentYear, currentMonth, 0).getDate();
+    let h = '<tr>';
+    for (let i = 0; i < first; i++) h += '<td></td>';
+    for (let d = 1; d <= days; d++) {
+      const dow = (first + d - 1) % 7;
+      let c = '';
+      if (today.getFullYear() === currentYear && today.getMonth() === currentMonth - 1 && today.getDate() === d) c = 'today';
+      else if (dow === 0) c = 'sun';
+      else if (dow === 6) c = 'sat';
+      h += '<td class="' + c + '">' + d + '</td>';
+      if (dow === 6 && d < days) h += '</tr><tr>';
+    }
+    h += '</tr>';
+    document.getElementById('calBody').innerHTML = h;
+  }
+  function changeMonth(delta) {
+    currentMonth += delta;
+    if (currentMonth > 12) { currentMonth = 1; currentYear++; }
+    if (currentMonth < 1) { currentMonth = 12; currentYear--; }
+    render();
+  }
+  render();
+  </script>
+</body>
+</html>

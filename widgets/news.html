@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Meiryo', sans-serif;
+    padding: 20px; background: #fff;
+  }
+  .card-title {
+    font-size: 16px; font-weight: 700; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px; color: #558B2F;
+  }
+  .icon {
+    width: 24px; height: 24px; background: #7CB342; color: #fff;
+    border-radius: 6px; display: flex; align-items: center;
+    justify-content: center; font-size: 13px;
+  }
+  .feed-list { list-style: none; }
+  .feed-item {
+    padding: 12px 0; border-bottom: 1px solid #f0f0f0;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
+  }
+  .feed-item:last-child { border-bottom: none; }
+  .feed-item-content { flex: 1; }
+  .cat {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; margin-bottom: 4px;
+  }
+  .cat.event { background: #E3F2FD; color: #1565C0; }
+  .cat.info { background: #F3E5F5; color: #7B1FA2; }
+  .title-text { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .badge {
+    font-size: 11px; background: #FFCDD2; color: #C62828;
+    padding: 1px 8px; border-radius: 10px; font-weight: 600; margin-left: 6px;
+  }
+  .date { font-size: 12px; color: #666; }
+  .detail-btn {
+    padding: 6px 14px; border: 1px solid #E0E0E0; border-radius: 6px;
+    background: #fff; font-size: 12px; cursor: pointer; white-space: nowrap;
+    transition: all 0.2s; color: #333; text-decoration: none;
+  }
+  .detail-btn:hover { border-color: #7CB342; color: #558B2F; background: #F1F8E9; }
+</style>
+</head>
+<body>
+  <div class="card-title"><span class="icon">&#128240;</span>社内ニュース</div>
+  <ul class="feed-list">
+    <li class="feed-item">
+      <div class="feed-item-content">
+        <span class="cat event">イベント</span>
+        <div class="title-text">ラシクラボカップ開催<span class="badge">NEW</span></div>
+        <div class="date">2026-02-17 15:00</div>
+      </div>
+      <a href="#" class="detail-btn">詳細</a>
+    </li>
+    <li class="feed-item">
+      <div class="feed-item-content">
+        <span class="cat info">告知</span>
+        <div class="title-text">さいたま新都心事業所 開所記念パーティー</div>
+        <div class="date">2026-02-14 15:00</div>
+      </div>
+      <a href="#" class="detail-btn">詳細</a>
+    </li>
+    <li class="feed-item">
+      <div class="feed-item-content">
+        <span class="cat event">イベント</span>
+        <div class="title-text">社内勉強会「AI活用入門」参加者募集</div>
+        <div class="date">2026-02-12 10:00</div>
+      </div>
+      <a href="#" class="detail-btn">詳細</a>
+    </li>
+    <li class="feed-item">
+      <div class="feed-item-content">
+        <span class="cat info">告知</span>
+        <div class="title-text">健康診断のご案内</div>
+        <div class="date">2026-02-10 09:00</div>
+      </div>
+      <a href="#" class="detail-btn">詳細</a>
+    </li>
+    <li class="feed-item">
+      <div class="feed-item-content">
+        <span class="cat event">イベント</span>
+        <div class="title-text">3月度 全体会議のお知らせ</div>
+        <div class="date">2026-02-08 11:00</div>
+      </div>
+      <a href="#" class="detail-btn">詳細</a>
+    </li>
+    <li class="feed-item">
+      <div class="feed-item-content">
+        <span class="cat info">告知</span>
+        <div class="title-text">新入社員紹介（2月入社）</div>
+        <div class="date">2026-02-03 10:00</div>
+      </div>
+      <a href="#" class="detail-btn">詳細</a>
+    </li>
+  </ul>
+</body>
+</html>

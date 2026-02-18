@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ラシクルinformation - 社員ポータル</title>
+<style>
+  :root {
+    --primary: #7CB342;
+    --primary-dark: #558B2F;
+    --primary-light: #C5E1A5;
+    --primary-pale: #F1F8E9;
+    --accent: #FF8F00;
+    --text: #333333;
+    --text-light: #666666;
+    --bg: #F5F5F5;
+    --white: #FFFFFF;
+    --border: #E0E0E0;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Meiryo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ========== HEADER ========== */
+  .header {
+    background: var(--primary-dark);
+    color: var(--white);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+  .header-logo {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header-logo .dot {
+    width: 10px; height: 10px;
+    background: var(--primary-light);
+    border-radius: 50%;
+  }
+  .header-nav { display: flex; gap: 4px; }
+  .header-nav a {
+    color: var(--white);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+  .header-nav a:hover, .header-nav a.active {
+    background: rgba(255,255,255,0.15);
+  }
+  .hamburger {
+    display: none;
+    background: none; border: none; color: var(--white);
+    font-size: 24px; cursor: pointer;
+  }
+
+  /* ========== HERO BANNER ========== */
+  .hero {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, #33691E 50%, #1B5E20 100%);
+    color: var(--white);
+    text-align: center;
+    padding: 48px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.02) 40px,
+      rgba(255,255,255,0.02) 80px
+    );
+  }
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    position: relative;
+  }
+  .hero .brand {
+    font-size: 16px;
+    margin-top: 8px;
+    opacity: 0.8;
+    position: relative;
+  }
+
+  /* ========== MAIN GRID ========== */
+  .main {
+    max-width: 1280px;
+    margin: 24px auto;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    gap: 20px;
+  }
+
+  /* ========== CARD ========== */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-dark);
+  }
+  .card-title .icon {
+    width: 24px; height: 24px;
+    background: var(--primary);
+    color: var(--white);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .card-title .icon.orange { background: var(--accent); }
+  .card-title .icon.blue { background: #1976D2; }
+
+  /* ========== SEARCH ========== */
+  .search-desc { font-size: 13px; color: var(--text-light); margin-bottom: 10px; }
+  .search-box {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus { border-color: var(--primary); }
+
+  /* ========== ACCORDION ========== */
+  .accordion-group { margin-top: 4px; }
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+  .accordion-header:hover { color: var(--primary-dark); }
+  .accordion-arrow {
+    transition: transform 0.3s;
+    font-size: 12px;
+  }
+  .accordion-header.open .accordion-arrow { transform: rotate(90deg); }
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .accordion-body.open { max-height: 500px; }
+  .accordion-item {
+    display: block;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.15s;
+  }
+  .accordion-item:hover {
+    background: var(--primary-pale);
+    color: var(--primary-dark);
+  }
+
+  /* ========== NOTICE / NEWS LIST ========== */
+  .feed-section { margin-bottom: 16px; }
+  .feed-section-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .feed-list { list-style: none; }
+  .feed-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .feed-item:last-child { border-bottom: none; }
+  .feed-item-content { flex: 1; }
+  .feed-category {
+    display: inline-block;
+    font-size: 11px;
+    color: var(--text-light);
+    background: #f5f5f5;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+  }
+  .feed-category.hr { background: #E8F5E9; color: #2E7D32; }
+  .feed-category.rule { background: #FFF3E0; color: #E65100; }
+  .feed-category.event { background: #E3F2FD; color: #1565C0; }
+  .feed-category.info { background: #F3E5F5; color: #7B1FA2; }
+  .feed-title-text {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .feed-badge {
+    font-size: 11px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-left: 6px;
+  }
+  .feed-badge.new {
+    background: #FFCDD2;
+    color: #C62828;
+  }
+  .feed-date {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+  .feed-detail-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .feed-detail-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary-dark);
+    background: var(--primary-pale);
+  }
+  .center-card {
+    border: 2px solid var(--primary);
+    max-height: 480px;
+    overflow-y: auto;
+  }
+  .center-card::-webkit-scrollbar { width: 6px; }
+  .center-card::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 3px;
+  }
+
+  /* ========== MY PAGE HUB ========== */
+  .hub-info {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 14px;
+  }
+  .hub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .hub-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--white);
+    transition: all 0.2s;
+    text-decoration: none;
+    color: var(--text);
+    text-align: center;
+  }
+  .hub-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary-pale);
+    color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(124,179,66,0.2);
+  }
+
+  /* ========== LINKS ========== */
+  .link-group { margin-bottom: 12px; }
+  .link-group-title {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .link-item {
+    display: block;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .link-item:hover {
+    background: var(--primary-pale);
+    color: var(--primary-dark);
+  }
+
+  /* ========== CALENDAR ========== */
+  .calendar-header {
+    text-align: center;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+  .calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 13px;
+  }
+  .calendar-table th {
+    padding: 6px;
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 12px;
+  }
+  .calendar-table td {
+    padding: 6px;
+    border-radius: 50%;
+    cursor: default;
+  }
+  .calendar-table td.today {
+    background: var(--primary);
+    color: var(--white);
+    font-weight: 700;
+    border-radius: 50%;
+    width: 32px; height: 32px;
+  }
+  .calendar-table td.sat { color: #1976D2; }
+  .calendar-table td.sun { color: #D32F2F; }
+  .calendar-note {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-light);
+    text-align: center;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 1024px) {
+    .main {
+      grid-template-columns: 1fr 1fr;
+    }
+    .main .left-col { order: 2; }
+    .main .center-col { order: 1; grid-column: 1 / -1; }
+    .main .right-col { order: 3; }
+  }
+  @media (max-width: 768px) {
+    .main {
+      grid-template-columns: 1fr;
+    }
+    .main .left-col { order: 2; }
+    .main .center-col { order: 1; }
+    .main .right-col { order: 3; }
+    .hero h1 { font-size: 28px; }
+    .header-nav { display: none; }
+    .header-nav.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 56px; left: 0; right: 0;
+      background: var(--primary-dark);
+      padding: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .hamburger { display: block; }
+    .hub-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ========== SCROLLBAR ========== */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #f1f1f1; }
+  ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #aaa; }
+
+  /* ========== FOOTER ========== */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--text-light);
+    border-top: 1px solid var(--border);
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <div class="header-logo">
+    <span class="dot"></span>
+    ラシクルinformation
+  </div>
+  <button class="hamburger" onclick="toggleNav()">&#9776;</button>
+  <nav class="header-nav" id="headerNav">
+    <a href="#" class="active">ホーム</a>
+    <a href="#">社内掲示板</a>
+    <a href="#">オンボーディング</a>
+    <a href="#">速報</a>
+    <a href="#">ヘルプデスク</a>
+    <a href="#">マニュアル</a>
+  </nav>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <h1>ラシクルinformation</h1>
+  <p class="brand">powered by ラシクラボ</p>
+</section>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main">
+
+  <!-- ===== LEFT COLUMN ===== -->
+  <div class="left-col">
+
+    <!-- Search -->
+    <div class="card">
+      <div class="card-title">
+        <span class="icon">&#128269;</span>
+        検索
+      </div>
+      <p class="search-desc">ポータル内を検索</p>
+      <input type="text" class="search-box" placeholder="キーワードを入力">
+    </div>
+
+    <!-- Department Info -->
+    <div class="card">
+      <div class="card-title">
+        <span class="icon">&#128193;</span>
+        社内管理部門からの情報
+      </div>
+      <p class="search-desc">カテゴリ名をクリックするとリンクが展開</p>
+
+      <div class="accordion-group">
+        <button class="accordion-header open" onclick="toggleAccordion(this)">
+          <span class="accordion-arrow">&#9654;</span>
+          人事・労務
+        </button>
+        <div class="accordion-body open">
+          <a href="#" class="accordion-item">就業規則（最新版）</a>
+          <a href="#" class="accordion-item">給与/休暇の手引き</a>
+          <a href="#" class="accordion-item">入社・退職フロー</a>
+        </div>
+      </div>
+
+      <div class="accordion-group">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="accordion-arrow">&#9654;</span>
+          総務・施設
+        </button>
+        <div class="accordion-body">
+          <a href="#" class="accordion-item">備品購入申請</a>
+          <a href="#" class="accordion-item">会議室予約</a>
+          <a href="#" class="accordion-item">施設利用ガイド</a>
+        </div>
+      </div>
+
+      <div class="accordion-group">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="accordion-arrow">&#9654;</span>
+          経理
+        </button>
+        <div class="accordion-body">
+          <a href="#" class="accordion-item">経費精算マニュアル</a>
+          <a href="#" class="accordion-item">請求書処理フロー</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="card">
+      <div class="card-title">
+        <span class="icon blue">&#128218;</span>
+        各種情報カテゴリ集
+      </div>
+
+      <div class="accordion-group">
+        <button class="accordion-header open" onclick="toggleAccordion(this)">
+          <span class="accordion-arrow">&#9654;</span>
+          運営マニュアル
+        </button>
+        <div class="accordion-body open">
+          <a href="#" class="accordion-item">日次実績の流れ</a>
+          <a href="#" class="accordion-item">施設外就労の報告</a>
+        </div>
+      </div>
+
+      <div class="accordion-group">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="accordion-arrow">&#9654;</span>
+          クリエイティブ
+        </button>
+        <div class="accordion-body">
+          <a href="#" class="accordion-item">デザインガイドライン</a>
+          <a href="#" class="accordion-item">ブランド素材集</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== CENTER COLUMN ===== -->
+  <div class="center-col">
+
+    <!-- Internal Notices -->
+    <div class="card center-card">
+      <div class="card-title">
+        <span class="icon orange">&#128227;</span>
+        社内通達
+      </div>
+
+      <ul class="feed-list">
+        <li class="feed-item">
+          <div class="feed-item-content">
+            <span class="feed-category rule">規程</span>
+            <div class="feed-title-text">
+              【通達】在宅タイムカード仕様変更
+              <span class="feed-badge new">NEW</span>
+            </div>
+            <div class="feed-date">2026-02-18 10:00</div>
+          </div>
+          <a href="#" class="feed-detail-btn">詳細</a>
+        </li>
+        <li class="feed-item">
+          <div class="feed-item-content">
+            <span class="feed-category hr">人事</span>
+            <div class="feed-title-text">2月度 人事異動のお知らせ</div>
+            <div class="feed-date">2026-02-15 09:00</div>
+          </div>
+          <a href="#" class="feed-detail-btn">詳細</a>
+        </li>
+        <li class="feed-item">
+          <div class="feed-item-content">
+            <span class="feed-category rule">規程</span>
+            <div class="feed-title-text">就業規則 改定のお知らせ</div>
+            <div class="feed-date">2026-02-10 14:00</div>
+          </div>
+          <a href="#" class="feed-detail-btn">詳細</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Internal News -->
+    <div class="card center-card">
+      <div class="card-title">
+        <span class="icon">&#128240;</span>
+        社内ニュース
+      </div>
+
+      <ul class="feed-list">
+        <li class="feed-item">
+          <div class="feed-item-content">
+            <span class="feed-category event">イベント</span>
+            <div class="feed-title-text">
+              ラシクラボカップ開催
+              <span class="feed-badge new">NEW</span>
+            </div>
+            <div class="feed-date">2026-02-17 15:00</div>
+          </div>
+          <a href="#" class="feed-detail-btn">詳細</a>
+        </li>
+        <li class="feed-item">
+          <div class="feed-item-content">
+            <span class="feed-category info">告知</span>
+            <div class="feed-title-text">さいたま新都心事業所 開所記念パーティー</div>
+            <div class="feed-date">2026-02-14 15:00</div>
+          </div>
+          <a href="#" class="feed-detail-btn">詳細</a>
+        </li>
+        <li class="feed-item">
+          <div class="feed-item-content">
+            <span class="feed-category event">イベント</span>
+            <div class="feed-title-text">社内勉強会「AI活用入門」参加者募集</div>
+            <div class="feed-date">2026-02-12 10:00</div>
+          </div>
+          <a href="#" class="feed-detail-btn">詳細</a>
+        </li>
+        <li class="feed-item">
+          <div class="feed-item-content">
+            <span class="feed-category info">告知</span>
+            <div class="feed-title-text">健康診断のご案内</div>
+            <div class="feed-date">2026-02-10 09:00</div>
+          </div>
+          <a href="#" class="feed-detail-btn">詳細</a>
+        </li>
+        <li class="feed-item">
+          <div class="feed-item-content">
+            <span class="feed-category event">イベント</span>
+            <div class="feed-title-text">3月度 全体会議のお知らせ</div>
+            <div class="feed-date">2026-02-08 11:00</div>
+          </div>
+          <a href="#" class="feed-detail-btn">詳細</a>
+        </li>
+        <li class="feed-item">
+          <div class="feed-item-content">
+            <span class="feed-category info">告知</span>
+            <div class="feed-title-text">新入社員紹介（2月入社）</div>
+            <div class="feed-date">2026-02-03 10:00</div>
+          </div>
+          <a href="#" class="feed-detail-btn">詳細</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ===== RIGHT COLUMN ===== -->
+  <div class="right-col">
+
+    <!-- My Page Hub -->
+    <div class="card">
+      <div class="card-title">
+        <span class="icon blue">&#128100;</span>
+        マイページ・拠点ハブ
+      </div>
+      <p class="hub-info">拠点：さいたま新都心 ／ 権限：staff</p>
+      <div class="hub-grid">
+        <a href="#" class="hub-btn">相談・連絡</a>
+        <a href="#" class="hub-btn">申請・届出</a>
+        <a href="#" class="hub-btn">実績報告</a>
+        <a href="#" class="hub-btn">月次</a>
+        <a href="#" class="hub-btn">備品管理</a>
+        <a href="#" class="hub-btn">小口管理</a>
+      </div>
+    </div>
+
+    <!-- Links Collection -->
+    <div class="card">
+      <div class="card-title">
+        <span class="icon">&#128279;</span>
+        各種リンク集
+      </div>
+
+      <div class="link-group">
+        <div class="link-group-title">
+          <span class="accordion-arrow">&#9660;</span>
+          社内広報SNS
+        </div>
+        <a href="#" class="link-item">Instagram 広報</a>
+        <a href="#" class="link-item">X（旧Twitter）広報</a>
+      </div>
+
+      <div class="link-group">
+        <div class="link-group-title">
+          <span class="accordion-arrow">&#9660;</span>
+          ツール
+        </div>
+        <a href="#" class="link-item">Google Workspace</a>
+        <a href="#" class="link-item">社内チャット</a>
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="card">
+      <div class="card-title">
+        <span class="icon">&#128197;</span>
+        カレンダー
+      </div>
+      <div class="calendar-header">2026年 2月</div>
+      <table class="calendar-table">
+        <thead>
+          <tr>
+            <th class="sun">日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th class="sat">土</th>
+          </tr>
+        </thead>
+        <tbody id="calendarBody">
+        </tbody>
+      </table>
+      <p class="calendar-note">※ Googleカレンダー埋め込み予定</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  &copy; 2026 ラシクルinformation ／ ラシクラボ ｜ 社員ポータル
+</footer>
+
+<script>
+// Accordion toggle
+function toggleAccordion(el) {
+  el.classList.toggle('open');
+  const body = el.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// Mobile nav toggle
+function toggleNav() {
+  document.getElementById('headerNav').classList.toggle('open');
+}
+
+// Calendar generation
+function generateCalendar(year, month) {
+  const body = document.getElementById('calendarBody');
+  if (!body) return;
+  const today = new Date();
+  const firstDay = new Date(year, month - 1, 1).getDay();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  let html = '<tr>';
+  for (let i = 0; i < firstDay; i++) html += '<td></td>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dow = (firstDay + d - 1) % 7;
+    let cls = '';
+    if (today.getFullYear() === year && today.getMonth() === month - 1 && today.getDate() === d) cls = 'today';
+    else if (dow === 0) cls = 'sun';
+    else if (dow === 6) cls = 'sat';
+    html += '<td class="' + cls + '">' + d + '</td>';
+    if (dow === 6 && d < daysInMonth) html += '</tr><tr>';
+  }
+  html += '</tr>';
+  body.innerHTML = html;
+}
+generateCalendar(2026, 2);
+</script>
+</body>
+</html>
