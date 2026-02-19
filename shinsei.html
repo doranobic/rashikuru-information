@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>申請届け出 | ラシクラボ 社員ポータル</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Meiryo', sans-serif;
+      background: #F5F5F5;
+      color: #333;
+      line-height: 1.7;
+    }
+
+    .page-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      text-align: center;
+      font-size: 15px;
+      color: #777;
+      margin-bottom: 40px;
+    }
+
+    .category-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border-left: 4px solid #ccc;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .category-card:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .category-card:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Accent border colors */
+    .category-card.blue    { border-left-color: #1565C0; }
+    .category-card.green   { border-left-color: #2E7D32; }
+    .category-card.orange  { border-left-color: #E65100; }
+    .category-card.teal    { border-left-color: #00796B; }
+    .category-card.purple  { border-left-color: #5E35B1; }
+
+    .card-header {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .card-header.blue    { color: #1565C0; }
+    .card-header.green   { color: #2E7D32; }
+    .card-header.orange  { color: #E65100; }
+    .card-header.teal    { color: #00796B; }
+    .card-header.purple  { color: #5E35B1; }
+
+    .card-description {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 18px;
+    }
+
+    .card-action-btn {
+      display: inline-block;
+      padding: 10px 28px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      text-decoration: none;
+      transition: opacity 0.2s ease, transform 0.15s ease;
+    }
+
+    .card-action-btn:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    .card-action-btn.blue   { background: #1565C0; }
+    .card-action-btn.green  { background: #2E7D32; }
+    .card-action-btn.orange { background: #E65100; }
+    .card-action-btn.teal   { background: #00796B; }
+
+    .card-note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #999;
+      padding-left: 4px;
+    }
+
+    .card-note::before {
+      content: "※ ";
+    }
+
+    /* List style for Category 5 */
+    .form-link-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .form-link-list li a {
+      display: block;
+      padding: 10px 16px;
+      background: #F3E5F5;
+      color: #5E35B1;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .form-link-list li a::before {
+      content: "▸ ";
+      font-size: 12px;
+    }
+
+    .form-link-list li a:hover {
+      background: #E1BEE7;
+      transform: translateX(3px);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .page-container {
+        padding: 28px 16px 48px;
+      }
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .category-card {
+        padding: 22px 20px;
+      }
+
+      .card-header {
+        font-size: 18px;
+      }
+
+      .form-link-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-container">
+
+    <h1 class="page-title">&#x1F4CB; 申請届け出</h1>
+    <p class="page-subtitle">各種申請フォームや届け出の雛形はこちらから</p>
+
+    <!-- Category 1: 経費申請 -->
+    <div class="category-card blue">
+      <div class="card-header blue">&#x1F4B0; 経費申請</div>
+      <p class="card-description">交通費・立替経費などの精算申請</p>
+      <a href="#" class="card-action-btn blue">経費申請フォームへ</a>
+      <p class="card-note">毎月25日締め・翌月15日支給</p>
+    </div>
+
+    <!-- Category 2: 会社届出情報の変更 -->
+    <div class="category-card green">
+      <div class="card-header green">&#x1F4DD; 会社届出情報の変更</div>
+      <p class="card-description">住所変更・氏名変更・通勤経路変更など</p>
+      <a href="#" class="card-action-btn green">変更申請フォームへ</a>
+      <p class="card-note">変更後10日以内に届出をお願いします</p>
+    </div>
+
+    <!-- Category 3: 住宅手当申請 -->
+    <div class="category-card orange">
+      <div class="card-header orange">&#x1F3E0; 住宅手当申請</div>
+      <p class="card-description">住宅手当の新規申請・変更</p>
+      <a href="#" class="card-action-btn orange">住宅手当申請フォームへ</a>
+      <p class="card-note">対象条件は就業規則をご確認ください</p>
+    </div>
+
+    <!-- Category 4: 自転車利用申請 -->
+    <div class="category-card teal">
+      <div class="card-header teal">&#x1F6B2; 自転車利用申請</div>
+      <p class="card-description">自転車通勤の届出・駐輪場利用申請</p>
+      <a href="#" class="card-action-btn teal">自転車利用申請フォームへ</a>
+      <p class="card-note">保険加入証明書の提出が必要です</p>
+    </div>
+
+    <!-- Category 5: その他の届出・雛形 -->
+    <div class="category-card purple">
+      <div class="card-header purple">&#x1F4C4; その他の届出・雛形</div>
+      <p class="card-description">各種届出や申請書の雛形をダウンロードできます</p>
+      <ul class="form-link-list">
+        <li><a href="#">遅刻届</a></li>
+        <li><a href="#">早退届</a></li>
+        <li><a href="#">残業届</a></li>
+        <li><a href="#">休暇届（有給・慶弔・特別）</a></li>
+        <li><a href="#">出張申請書</a></li>
+        <li><a href="#">研修参加申請書</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -59,7 +59,6 @@
     background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,.02) 40px, rgba(255,255,255,.02) 80px);
   }
   .hero h1 { font-size: 36px; font-weight: 900; letter-spacing: 4px; position: relative; }
-  .hero .brand { font-size: 14px; margin-top: 6px; opacity: .8; position: relative; }
 
   @media (max-width: 640px) {
     .header-nav { display: none; }
@@ -93,6 +92,9 @@
   .icon.green { background: var(--primary); }
   .icon.orange { background: var(--accent); }
   .icon.blue { background: #1976D2; }
+  .icon.purple { background: #7B1FA2; }
+  .icon.teal { background: #00796B; }
+  .icon.pink { background: #AD1457; }
 
   /* Search */
   .search-desc { font-size: 12px; color: var(--text-light); margin-bottom: 8px; }
@@ -131,9 +133,9 @@
   }
   .sr-cat.cat-info { background: #E3F2FD; color: #1565C0; }
   .sr-cat.cat-link { background: #E8F5E9; color: #2E7D32; }
-  .sr-cat.cat-faq { background: #FFF3E0; color: #E65100; }
   .sr-cat.cat-hub { background: #F3E5F5; color: #7B1FA2; }
   .sr-cat.cat-news { background: #FFEBEE; color: #C62828; }
+  .sr-cat.cat-sc { background: #E0F7FA; color: #00695C; }
   .sr-title { font-weight: 600; }
   .sr-title mark { background: #FFEE58; color: var(--text); border-radius: 2px; padding: 0 1px; }
   .sr-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
@@ -186,7 +188,6 @@
     transition: all .2s; color: var(--text); text-decoration: none;
   }
   .det:hover { border-color: var(--primary); color: var(--primary-dark); background: var(--primary-pale); }
-
   .feed-loading { font-size: 12px; color: var(--text-light); padding: 16px; text-align: center; }
   .scroll-card { border: 2px solid var(--primary); max-height: 420px; overflow-y: auto; }
   .scroll-card::-webkit-scrollbar { width: 5px; }
@@ -206,6 +207,17 @@
     color: var(--primary-dark); transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(124,179,66,.2);
   }
+
+  /* Shortcut grid */
+  .sc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 6px; }
+  .sc-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 10px 4px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 10px; font-weight: 600; text-decoration: none; color: var(--text);
+    transition: all .2s; background: var(--white); text-align: center; line-height: 1.3;
+  }
+  .sc-btn:hover { border-color: var(--primary); background: var(--primary-pale); transform: translateY(-1px); }
+  .sc-btn .sc-i { font-size: 20px; }
 
   /* Links */
   .lg { margin-bottom: 4px; }
@@ -240,33 +252,43 @@
   .links-scroll::-webkit-scrollbar { width: 5px; }
   .links-scroll::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
 
-
-  /* Full-width section (below main grid) */
+  /* Full-width section */
   .full-section {
     max-width: 1280px; margin: 0 auto 16px; padding: 0 12px;
     display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
   }
   @media (max-width: 768px) { .full-section { grid-template-columns: 1fr; } }
 
-  /* FAQ */
-  .faq-q {
-    display: flex; align-items: center; gap: 8px; padding: 12px 0;
-    cursor: pointer; font-weight: 600; font-size: 13px; border: none;
-    background: none; width: 100%; text-align: left; color: var(--text);
-    border-bottom: 1px solid var(--border); transition: color .2s;
+  /* FAQ page cards */
+  .faq-pg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .faq-pg-card {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 28px 16px; border-radius: var(--radius); text-decoration: none;
+    color: var(--white); font-weight: 700; font-size: 15px; text-align: center;
+    transition: transform .2s, box-shadow .2s;
   }
-  .faq-q:hover { color: var(--primary-dark); }
-  .faq-q .q-icon {
-    width: 22px; height: 22px; border-radius: 50%; background: var(--primary);
-    color: var(--white); display: inline-flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  .faq-pg-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+  .faq-pg-card .pg-i { font-size: 32px; margin-bottom: 8px; }
+  .faq-pg-card .pg-sub { font-size: 11px; font-weight: 400; opacity: .85; margin-top: 4px; }
+  @media (max-width: 640px) { .faq-pg { grid-template-columns: 1fr; } }
+
+  /* Admin section */
+  .admin-card {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #e0e0e0; border-radius: var(--radius); padding: 18px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.2); margin-bottom: 16px;
   }
-  .faq-a {
-    max-height: 0; overflow: hidden; transition: max-height .3s ease;
-    font-size: 12px; color: var(--text-light);
+  .admin-card .card-title { color: #FFD54F; }
+  .admin-sub { font-size: 11px; color: #999; margin-bottom: 12px; }
+  .admin-label { font-size: 12px; font-weight: 600; color: #FFD54F; margin-bottom: 6px; }
+  .admin-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .admin-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 7px 14px; border-radius: 6px; font-size: 11px;
+    text-decoration: none; font-weight: 600; transition: all .2s;
+    background: rgba(255,255,255,.08); color: #ccc; border: 1px solid rgba(255,255,255,.12);
   }
-  .faq-a.open { max-height: 300px; }
-  .faq-a-inner { padding: 10px 14px 10px 38px; line-height: 1.8; }
+  .admin-btn:hover { background: rgba(255,213,79,.15); color: #FFD54F; border-color: rgba(255,213,79,.4); }
 
   /* Responsive */
   @media (max-width: 960px) {
@@ -294,11 +316,11 @@
 </section>
 
 <div class="main">
-  <!-- LEFT -->
+  <!-- ========== LEFT ========== -->
   <div class="left">
     <div class="card">
       <div class="card-title"><span class="icon green">&#128269;</span>検索</div>
-      <p class="search-desc">ポータル内のリンク・FAQ・カテゴリを検索</p>
+      <p class="search-desc">ポータル内のリンク・カテゴリを検索</p>
       <div class="search-wrap">
         <span class="search-icon">&#128269;</span>
         <input type="text" class="search-box" id="portalSearch" placeholder="キーワードを入力" oninput="portalSearchHandler()" autocomplete="off">
@@ -308,8 +330,21 @@
     </div>
 
     <div class="card">
+      <div class="card-title"><span class="icon teal">&#9889;</span>便利ショートカット</div>
+      <div class="sc-grid">
+        <a href="#" target="_blank" class="sc-btn"><span class="sc-i">&#128221;</span>Keep</a>
+        <a href="#" target="_blank" class="sc-btn"><span class="sc-i">&#128193;</span>Drive</a>
+        <a href="#" target="_blank" class="sc-btn"><span class="sc-i">&#128197;</span>Calendar</a>
+        <a href="#" target="_blank" class="sc-btn"><span class="sc-i">&#127909;</span>Meet</a>
+        <a href="#" target="_blank" class="sc-btn"><span class="sc-i">&#128172;</span>Chat</a>
+        <a href="#" target="_blank" class="sc-btn"><span class="sc-i">&#128218;</span>Knowbee</a>
+        <a href="#" target="_blank" class="sc-btn"><span class="sc-i">&#127869;</span>こだわりシェフ</a>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-title"><span class="icon green">&#128193;</span>社内管理部門からの情報</div>
-      <p class="search-desc">カテゴリ名をクリックするとリンクが展開（<a href="https://drive.google.com/drive/folders/1hjx6p7FDXk4zEohA0Vo7g955IgMku8UI?usp=sharing" target="_blank" style="color:var(--primary-dark)">フォルダ一覧</a>）</p>
+      <p class="search-desc">カテゴリ名をクリックで展開（<a href="https://drive.google.com/drive/folders/1hjx6p7FDXk4zEohA0Vo7g955IgMku8UI?usp=sharing" target="_blank" style="color:var(--primary-dark)">フォルダ一覧</a>）</p>
       <div>
         <button class="acc-h open" onclick="t(this)"><span class="arr">&#9654;</span>就業・人事</button>
         <div class="acc-b open">
@@ -338,66 +373,17 @@
           <a href="https://docs.google.com/document/d/1xcuylZBnwStxl68kIkU3hwtNmIdc4Y5KZhnJMnZKpQU/edit?usp=sharing" target="_blank" class="acc-i">SNS・広報コンプライアンス</a>
         </div>
       </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span class="icon blue">&#128218;</span>各種情報カテゴリ集</div>
       <div>
-        <button class="acc-h open" onclick="t(this)"><span class="arr">&#9654;</span>運営マニュアル</button>
-        <div class="acc-b open">
-          <a href="#" class="acc-i">日次実績の流れ</a>
-          <a href="#" class="acc-i">施設外就労の報告</a>
-        </div>
-      </div>
-      <div>
-        <button class="acc-h" onclick="t(this)"><span class="arr">&#9654;</span>&#128193; SNS運用</button>
+        <button class="acc-h" onclick="t(this)"><span class="arr">&#9654;</span>ガイドライン</button>
         <div class="acc-b">
-          <a href="#" class="acc-i">&#128196; Instagram運用ガイド</a>
-          <a href="#" class="acc-i">&#128196; X（旧Twitter）運用ガイド</a>
-          <a href="#" class="acc-i">&#128196; TikTok運用ガイド</a>
-          <a href="#" class="acc-i">&#128196; 投稿テンプレート集</a>
-          <a href="#" class="acc-i">&#128196; ハッシュタグ一覧</a>
-        </div>
-      </div>
-      <div>
-        <button class="acc-h" onclick="t(this)"><span class="arr">&#9654;</span>&#128193; 動画制作</button>
-        <div class="acc-b">
-          <a href="#" class="acc-i">&#128196; YouTube運用マニュアル</a>
-          <a href="#" class="acc-i">&#128196; 切り抜き動画 制作フロー</a>
-          <a href="#" class="acc-i">&#128196; サムネイル作成ガイド</a>
-          <a href="#" class="acc-i">&#128196; 動画編集ツール一覧</a>
-        </div>
-      </div>
-      <div>
-        <button class="acc-h" onclick="t(this)"><span class="arr">&#9654;</span>&#128193; デザイン・ブランド</button>
-        <div class="acc-b">
-          <a href="#" class="acc-i">&#128196; デザインガイドライン</a>
-          <a href="#" class="acc-i">&#128196; ブランド素材集（ロゴ・配色）</a>
-          <a href="#" class="acc-i">&#128196; フォント・カラー規定</a>
-          <a href="#" class="acc-i">&#128196; 名刺・印刷物テンプレート</a>
-        </div>
-      </div>
-      <div>
-        <button class="acc-h" onclick="t(this)"><span class="arr">&#9654;</span>&#128193; 音楽・EC</button>
-        <div class="acc-b">
-          <a href="#" class="acc-i">&#128196; 音楽配信の手順</a>
-          <a href="#" class="acc-i">&#128196; BOOTH出品マニュアル</a>
-          <a href="#" class="acc-i">&#128196; minne出品マニュアル</a>
-          <a href="#" class="acc-i">&#128196; 売上・利益管理シート</a>
-        </div>
-      </div>
-      <div>
-        <button class="acc-h" onclick="t(this)"><span class="arr">&#9654;</span>&#128193; 事業所運営</button>
-        <div class="acc-b">
-          <a href="#" class="acc-i">&#128196; 新拠点立ち上げチェックリスト</a>
-          <a href="#" class="acc-i">&#128196; 拠点SNSアカウント開設手順</a>
-          <a href="#" class="acc-i">&#128196; 月次レポートテンプレート</a>
+          <a href="#" target="_blank" class="acc-i">センシティブガイドライン</a>
+          <a href="#" target="_blank" class="acc-i">AIガイドライン</a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- CENTER -->
+  <!-- ========== CENTER ========== -->
   <div class="center">
     <div class="card scroll-card">
       <div class="card-title"><span class="icon orange">&#128227;</span>社内通達</div>
@@ -412,275 +398,295 @@
     </div>
   </div>
 
-  <!-- RIGHT -->
+  <!-- ========== RIGHT ========== -->
   <div class="right">
     <div class="card">
       <div class="card-title"><span class="icon blue">&#128100;</span>マイページ・拠点ハブ</div>
-      <p class="hub-info">拠点：さいたま新都心 ／ 権限：staff</p>
+      <p class="hub-info">拠点ごとにリンク先が変わります</p>
       <div class="hub-grid">
-        <a href="https://doranobic.github.io/rashikuru-information/contact.html" target="_blank" class="hub-btn">相談・連絡</a>
-        <a href="https://doranobic.github.io/rashikuru-information/offices.html" target="_blank" class="hub-btn">事業所一覧</a>
-        <a href="#" class="hub-btn">申請・届出</a>
+        <a href="#" class="hub-btn">利用集計表</a>
         <a href="#" class="hub-btn">実績報告</a>
-        <a href="#" class="hub-btn">月次</a>
         <a href="#" class="hub-btn">備品管理</a>
+        <a href="#" class="hub-btn">小口管理</a>
+        <a href="#" class="hub-btn">勤怠管理</a>
+        <a href="#" class="hub-btn">アカウント管理</a>
+        <a href="#" class="hub-btn">昼食在庫表</a>
+        <a href="#" class="hub-btn">タイムカードアプリ</a>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title"><span class="icon green">&#128279;</span>各種リンク集</div>
-      <div class="links-scroll">
+      <div class="card-title"><span class="icon orange">&#127970;</span>総務ハブ</div>
+      <div class="hub-grid">
+        <a href="https://doranobic.github.io/rashikuru-information/offices.html" target="_blank" class="hub-btn">&#127970; 事業所ページ</a>
+        <a href="https://doranobic.github.io/rashikuru-information/contact.html" target="_blank" class="hub-btn">&#128222; 相談・連絡</a>
+        <a href="https://doranobic.github.io/rashikuru-information/shinsei.html" target="_blank" class="hub-btn">&#128203; 申請届け出</a>
+        <a href="#" target="_blank" class="hub-btn">&#128101; 従業員情報</a>
+      </div>
+    </div>
 
-        <!-- ===== SNS ===== -->
-        <div class="lg">
-          <div class="lg-t parent" onclick="tl(this)"><span class="arr">&#9654;</span> SNS</div>
-          <div class="lg-b">
-
-            <!-- 本部 -->
-            <div class="lg">
-              <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 本部</div>
-              <div class="lg-b">
-                <div class="sns-row"><div class="sns-links">
-                  <a href="https://rashikulab.jp/" target="_blank" class="sns-badge web">HP</a>
-                  <a href="https://www.instagram.com/rashikulab/" target="_blank" class="sns-badge ig">IG</a>
-                  <a href="https://x.com/rashikulab" target="_blank" class="sns-badge x">X</a>
-                </div></div>
-              </div>
-            </div>
-            <!-- 関東 -->
-            <div class="lg">
-              <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 関東エリア</div>
-          <div class="lg-b">
-            <div class="sns-row"><div class="sns-name">千葉中央</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_chibachuo/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_cbc" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">千葉中央東口</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_chibachuo_east/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_cbce" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">大井町</div><div class="sns-links"><a href="https://www.instagram.com/rashikulaboimachi/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_oi" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">川崎</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_kawasaki/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_kawa" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">本厚木</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_hnat/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/Rashikulab_HNAT" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">浦和</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_urw/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_urw" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">さいたま新都心</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_ss/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_ss" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">大宮西口</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab.o.n/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_on" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">横浜</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_ykhm/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_ykhm" target="_blank" class="sns-badge x">X</a></div></div>
-          </div>
-        </div>
-
-        <!-- 東海エリア -->
-        <div class="lg">
-          <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 東海エリア</div>
-          <div class="lg-b">
-            <div class="sns-row"><div class="sns-name">名古屋</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_ngy/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_ngy" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">浜松</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_hmmt/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_hmmt" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">浜松田町</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_tamachi/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashiku_tamachi" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">にゃんこらぼ（浜松）</div><div class="sns-links"><a href="https://rashikulab.jp/nyankolab/" target="_blank" class="sns-badge web">HP</a><a href="https://www.instagram.com/nyankolab_0601/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/nyankolab_hmmt" target="_blank" class="sns-badge x">X</a><a href="https://www.youtube.com/@にゃんこらぼ浜松" target="_blank" class="sns-badge yt">YT</a></div></div>
-          </div>
-        </div>
-
-        <!-- 関西エリア -->
-        <div class="lg">
-          <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 関西エリア</div>
-          <div class="lg-b">
-            <div class="sns-row"><div class="sns-name">大阪堺</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_sakai/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulabsakai" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">和泉府中</div><div class="sns-links"><a href="https://www.instagram.com/rashiku_izm/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashiku_izm" target="_blank" class="sns-badge x">X</a></div></div>
-          </div>
-        </div>
-
-        <!-- 中国・四国 -->
-        <div class="lg">
-          <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 中国・四国</div>
-          <div class="lg-b">
-            <div class="sns-row"><div class="sns-name">広島</div><div class="sns-links"><a href="https://www.instagram.com/rashikulabhiroshima/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_h" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">松山</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_mtym/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_mtym" target="_blank" class="sns-badge x">X</a></div></div>
-          </div>
-        </div>
-
-        <!-- 九州エリア -->
-        <div class="lg">
-          <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 九州エリア</div>
-          <div class="lg-b">
-            <div class="sns-row"><div class="sns-name">小倉</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_kokr/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_kokr" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">小倉鍛冶町</div><div class="sns-links"><a href="https://www.instagram.com/k_kajimachi/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/k_kajimachi" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">博多</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_hakata/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_hkt" target="_blank" class="sns-badge x">X</a></div></div>
-            <div class="sns-row"><div class="sns-name">天神</div><div class="sns-links"><a href="https://www.instagram.com/rashiku_tenjin/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashiku_tenjin" target="_blank" class="sns-badge x">X</a></div></div>
-          </div>
-        </div>
-
-          </div><!-- /SNS lg-b -->
-        </div><!-- /SNS -->
-
-        <!-- ===== コンテンツ ===== -->
-        <div class="lg">
-          <div class="lg-t parent" onclick="tl(this)"><span class="arr">&#9654;</span> コンテンツ</div>
-          <div class="lg-b">
-            <!-- YouTube -->
-            <div class="lg">
-              <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> YouTube</div>
-              <div class="lg-b">
-                <div class="sns-row"><div class="sns-name">ともは赤髪</div><div class="sns-links"><a href="https://www.youtube.com/@tomohaakagami" target="_blank" class="sns-badge yt">YT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ブラーボりょう切り抜き</div><div class="sns-links"><a href="https://youtube.com/@rashikuru_ryoch" target="_blank" class="sns-badge yt">YT</a></div></div>
-                <div class="sns-row"><div class="sns-name">TOBE切り抜き</div><div class="sns-links"><a href="https://www.youtube.com/@tobe-rashikuru" target="_blank" class="sns-badge yt">YT</a></div></div>
-                <div class="sns-row"><div class="sns-name">にゃんこらぼ浜松</div><div class="sns-links"><a href="https://www.youtube.com/@にゃんこらぼ浜松" target="_blank" class="sns-badge yt">YT</a></div></div>
-                <div class="sns-row"><div class="sns-name">Flow-Lab</div><div class="sns-links"><a href="https://www.youtube.com/@Flow-Lab1" target="_blank" class="sns-badge yt">YT</a></div></div>
-              </div>
-            </div>
-            <!-- 輪和ヮの日常 -->
-            <div class="lg">
-              <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 輪和ヮの日常</div>
-              <div class="lg-b">
-                <div class="sns-row"><div class="sns-links">
-                  <a href="https://www.youtube.com/channel/UCgpgPbK9DjvQOrIcuy2eNfA" target="_blank" class="sns-badge yt">YT</a>
-                  <a href="https://x.com/izakaya_wawawa" target="_blank" class="sns-badge x">X</a>
-                  <a href="https://www.tiktok.com/@wawawa.nichijo" target="_blank" class="sns-badge tt">TT</a>
-                </div></div>
-              </div>
-            </div>
-            <!-- BUMP切り抜き -->
-            <div class="lg">
-              <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> BUMP切り抜き</div>
-              <div class="lg-b">
-                <div class="sns-row"><div class="sns-name">名場面アーカイブス</div><div class="sns-links"><a href="https://www.youtube.com/@%E5%90%8D%E5%A0%B4%E9%9D%A2%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%82%B9" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/meibamenarchives/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user5123171493361" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマ中毒ch</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E4%B8%AD%E6%AF%92ch" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/doramachudokuch/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user76050565132176" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマのツボ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%81%AE%E3%83%84%E3%83%9C" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dramano_tubo/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user4849554113286" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマ名場面集</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E5%90%8D%E5%A0%B4%E9%9D%A2%E9%9B%86" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama_meibamen/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@drama_meibamen" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">1分感動factory</div><div class="sns-links"><a href="https://www.youtube.com/@1%E5%88%86%E6%84%9F%E5%8B%95factory" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/1min_impressed_factory/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@1min_impressed_factory" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">神回だけ切り抜き</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A5%9E%E5%9B%9E%E3%81%A0%E3%81%91%E5%88%87%E3%82%8A%E6%8A%9C%E3%81%8D" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/thebest_only_kirinuki/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@thebest_only_kirinuki" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">バズったドラマシーン</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%90%E3%82%BA%E3%81%A3%E3%81%9F%E3%83%89%E3%83%A9%E3%83%9E%E3%82%B7%E3%83%BC%E3%83%B3" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/buzz_drama_episode/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@buzz_drama_episode" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマベストカット</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%83%99%E3%82%B9%E3%83%88%E3%82%AB%E3%83%83%E3%83%88" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dorama.besutcut/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@doramabesutcut" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">秒でハマる物語</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A7%92%E3%81%A7%E3%83%8F%E3%83%9E%E3%82%8B%E7%89%A9%E8%AA%9E" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/seconds_hamaru_story/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@seconds_hamaru_story" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ショート劇場まとめ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E5%8A%87%E5%A0%B4%E3%81%BE%E3%81%A8%E3%82%81" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/shortgekijomatome/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@shortgekijomatome" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">Base Bits Drama</div><div class="sns-links"><a href="https://www.youtube.com/@BaseBitsDrama" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/basebitsdrama/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@base_bits_drama" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">BUZZDRA</div><div class="sns-links"><a href="https://www.youtube.com/@buzzdra_clips" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/buzzdra_clips/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@buzzdra__clips" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマ切り抜き製作所</div><div class="sns-links"><a href="https://www.youtube.com/@dramaeditlab" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama__editlab/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@drama_editlab" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマクリップ倉庫</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%82%AF%E3%83%AA%E3%83%83%E3%83%97%E5%80%89%E5%BA%AB" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dramaclip_souko/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dramaclip_souko" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">秒で感動シアター</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A7%92%E3%81%A7%E6%84%9F%E5%8B%95%E3%82%B7%E3%82%A2%E3%82%BF%E3%83%BC" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/emotionclip_theater/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@emotionclip_theater" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">エモいシーンまとめ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%A8%E3%83%A2%E3%81%84%E3%82%B7%E3%83%BC%E3%83%B3%E3%81%BE%E3%81%A8%E3%82%81" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/emoishinmatome/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@emoishinmatome" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマまとめ部屋</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A7%92%E3%81%A7%E6%84%9F%E5%8B%95%E3%82%B7%E3%82%A2%E3%82%BF%E3%83%BC" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/doramamatomebeya/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@doramamatomebeya" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">1分で完結ドラマ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%81%BE%E3%81%A8%E3%82%81%E9%83%A8%E5%B1%8B" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/1minidorama/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user272291784992" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマハイライト</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E.%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%88" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama_highlight_000/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user8025730109981" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ショートドラマ速報</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E9%80%9F%E5%A0%B1_BUMP" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/syotodoramasokuhou/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@syotodoramasokuhou" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">神ドラマアーカイブ</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A5%9E%E3%83%89%E3%83%A9%E3%83%9E%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/got_drama_archive_002/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user51170875980164" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">瞬間ドラマch</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%9E%AC%E9%96%93%E3%83%89%E3%83%A9%E3%83%9Ech" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/syunkandoramach/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@syunkandoramach" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマクリップ劇場</div><div class="sns-links"><a href="https://www.youtube.com/channel/UCrlYaT5cSDDrPUG6_JehWFg" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dramacliptheater/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dramacliptheater" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">名作ドラマ切り抜き</div><div class="sns-links"><a href="https://www.youtube.com/channel/UCT9Bk6o50wGCOdSE_klfenQ" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/meisaku.dorama/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@meisaku.dorama" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマの核心</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%81%AE%E6%A0%B8%E5%BF%83" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/doramanokakushin/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@doramanokakushin" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマ見どころch</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E8%A6%8B%E3%81%A9%E3%81%93%E3%82%8Dch" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dorama.midokoro/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dorama.midokoro" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ショートドラマ宝箱</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E5%AE%9D%E7%AE%B1" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/shotodoramatakarabako/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@shotodoramatakarabako" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">心に刺さる1分</div><div class="sns-links"><a href="https://www.youtube.com/@%E5%BF%83%E3%81%AB%E5%88%BA%E3%81%95%E3%82%8B1%E5%88%86" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/kokoronisasaru1pun/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@kokoronisasaru1pun" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマの時間</div><div class="sns-links"><a href="https://www.youtube.com/channel/UC02sSK42zShLoX4YjFbFJfQ" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama.is.time/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dorama_is_time" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ドラマ切り抜き本舗</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E5%88%87%E3%82%8A%E6%8A%9C%E3%81%8D%E6%9C%AC%E8%88%97" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama_kirinuki_honpo1028/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@drama_kirinuki_honpo" target="_blank" class="sns-badge tt">TT</a></div></div>
-                <div class="sns-row"><div class="sns-name">ショートドラマの沼</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E3%81%AE%E6%B2%BC" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/short_drama_numa/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@short_drama_numa" target="_blank" class="sns-badge tt">TT</a></div></div>
-              </div>
-            </div>
-          </div><!-- /コンテンツ lg-b -->
-        </div><!-- /コンテンツ -->
-
-        <!-- ===== 販売サイト ===== -->
-        <div class="lg">
-          <div class="lg-t parent" onclick="tl(this)"><span class="arr">&#9654;</span> 販売サイト</div>
-          <div class="lg-b">
-            <!-- 音楽・販売サイト -->
-            <div class="lg">
-              <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 音楽・販売サイト</div>
-              <div class="lg-b">
-                <div class="sns-row"><div class="sns-name">ラシクラボMUSIC</div><div class="sns-links"><a href="https://music.rashikulab.jp/" target="_blank" class="sns-badge web">HP</a></div></div>
-                <div class="sns-row"><div class="sns-name">minne</div><div class="sns-links"><a href="https://minne.com/@rashikulab" target="_blank" class="sns-badge shop">minne</a></div></div>
-                <div class="sns-row"><div class="sns-name">BOOTH（ラシクラボ）</div><div class="sns-links"><a href="https://rashikulab.booth.pm/" target="_blank" class="sns-badge shop">BOOTH</a></div></div>
-                <div class="sns-row"><div class="sns-name">イラストAC</div><div class="sns-links"><a href="https://www.ac-illust.com/main/profile.php?id=24137464&area=1&page=1" target="_blank" class="sns-badge shop">DL</a></div></div>
-              </div>
-            </div>
-            <!-- ラシクル商店 -->
-            <div class="lg">
-              <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> ラシクル商店</div>
-              <div class="lg-b">
-                <div class="sns-row"><div class="sns-links">
-                  <a href="https://www.instagram.com/rashikuru_store/" target="_blank" class="sns-badge ig">IG</a>
-                  <a href="https://x.com/rashikuru_store" target="_blank" class="sns-badge x">X</a>
-                  <a href="https://rashikuru.booth.pm/items" target="_blank" class="sns-badge shop">BOOTH</a>
-                </div></div>
-              </div>
-            </div>
-          </div><!-- /販売サイト lg-b -->
-        </div><!-- /販売サイト -->
-
-        <!-- ===== ツール ===== -->
-        <div class="lg">
-          <div class="lg-t parent" onclick="tl(this)"><span class="arr">&#9654;</span> ツール</div>
-          <div class="lg-b">
-            <a href="#" class="lg-i">Google Workspace</a>
-            <a href="#" class="lg-i">社内チャット</a>
-          </div>
-        </div>
-
+    <div class="card">
+      <div class="card-title"><span class="icon purple">&#128214;</span>マニュアル</div>
+      <div class="hub-grid">
+        <a href="#" target="_blank" class="hub-btn">&#127970; 事業所運営</a>
+        <a href="#" target="_blank" class="hub-btn">&#128241; SNS運用</a>
+        <a href="#" target="_blank" class="hub-btn">&#127912; イラスト班</a>
+        <a href="#" target="_blank" class="hub-btn">&#127925; 音楽班</a>
+        <a href="#" target="_blank" class="hub-btn">&#127916; 動画班</a>
+        <a href="#" target="_blank" class="hub-btn">&#128142; 3DCG班</a>
+        <a href="#" target="_blank" class="hub-btn">&#9986; ハンドメイド班</a>
+        <a href="#" target="_blank" class="hub-btn">&#128444; Live2D班</a>
       </div>
     </div>
 
     <div class="card" style="padding:16px 18px">
       <div class="card-title"><span class="icon green">&#128197;</span>カレンダー</div>
       <iframe src="https://calendar.google.com/calendar/embed?src=rashikulab.creative%40gmail.com&ctz=Asia%2FTokyo" style="border:0;width:100%;height:500px;border-radius:8px;" frameborder="0" scrolling="no"></iframe>
+      <div style="margin-top:10px;text-align:center">
+        <a href="#" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;color:var(--text);background:var(--white);transition:all .2s">&#128197; 年間カレンダー（PDF）</a>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ===== FULL-WIDTH: FAQ ===== -->
-<div class="full-section" style="grid-template-columns:1fr">
-  <div>
-    <div class="card">
-      <div class="card-title"><span class="icon orange">&#10067;</span>よくある質問（FAQ）</div>
+<!-- ===== 各種素材 + フィードバック ===== -->
+<div class="full-section">
+  <div class="card">
+    <div class="card-title"><span class="icon pink">&#127912;</span>各種素材</div>
+    <div class="hub-grid" style="grid-template-columns:repeat(3,1fr)">
+      <a href="#" target="_blank" class="hub-btn">&#127912; ブランド素材</a>
+      <a href="#" target="_blank" class="hub-btn">&#128444; SNSフレーム</a>
+      <a href="#" target="_blank" class="hub-btn">&#128196; テンプレート</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="icon orange">&#128172;</span>フィードバック・匿名意見箱</div>
+    <p class="search-desc" style="margin-bottom:12px">改善提案やご意見をお寄せください</p>
+    <div class="hub-grid">
+      <a href="#" target="_blank" class="hub-btn" style="border-color:#FFC107;background:#FFFDE7">&#128161; 改善提案フォーム</a>
+      <a href="#" target="_blank" class="hub-btn" style="border-color:#EF5350;background:#FFEBEE">&#128737; ハラスメント相談フォーム</a>
+    </div>
+  </div>
+</div>
 
-      <div>
-        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>有給休暇の申請方法は？</button>
-        <div class="faq-a"><div class="faq-a-inner">マイページ・拠点ハブの「申請・届出」から有給休暇申請フォームを開いてください。<br>申請は原則3営業日前までにお願いします。急な体調不良の場合は当日朝に上長へ連絡の上、事後申請も可能です。</div></div>
+<!-- ===== よくある質問 ===== -->
+<div class="full-section" style="grid-template-columns:1fr">
+  <div class="card">
+    <div class="card-title"><span class="icon orange">&#10067;</span>よくある質問（FAQ）</div>
+    <p class="search-desc" style="margin-bottom:14px">カテゴリ別のQ&Aページへ移動します</p>
+    <div class="faq-pg">
+      <a href="https://doranobic.github.io/rashikuru-information/soumu.html" target="_blank" class="faq-pg-card" style="background:linear-gradient(135deg,#1565C0,#0D47A1)">
+        <span class="pg-i">&#128203;</span>総務<span class="pg-sub">備品・施設・届出・社内ルール</span>
+      </a>
+      <a href="https://doranobic.github.io/rashikuru-information/system.html" target="_blank" class="faq-pg-card" style="background:linear-gradient(135deg,#37474F,#263238)">
+        <span class="pg-i">&#128421;</span>システム<span class="pg-sub">PC・アカウント・ネットワーク</span>
+      </a>
+      <a href="https://doranobic.github.io/rashikuru-information/jigyosho-qa.html" target="_blank" class="faq-pg-card" style="background:linear-gradient(135deg,#2E7D32,#1B5E20)">
+        <span class="pg-i">&#127970;</span>事業所運営<span class="pg-sub">日次実績・施設外・利用者対応</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 各種リンク集 ===== -->
+<div class="full-section" style="grid-template-columns:1fr">
+  <div class="card">
+    <div class="card-title"><span class="icon green">&#128279;</span>各種リンク集</div>
+    <div class="links-scroll">
+
+      <!-- ===== SNS ===== -->
+      <div class="lg">
+        <div class="lg-t parent" onclick="tl(this)"><span class="arr">&#9654;</span> SNS</div>
+        <div class="lg-b">
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 本部</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-links">
+                <a href="https://rashikulab.jp/" target="_blank" class="sns-badge web">HP</a>
+                <a href="https://www.instagram.com/rashikulab/" target="_blank" class="sns-badge ig">IG</a>
+                <a href="https://x.com/rashikulab" target="_blank" class="sns-badge x">X</a>
+              </div></div>
+            </div>
+          </div>
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 関東エリア</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-name">千葉中央</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_chibachuo/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_cbc" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">千葉中央東口</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_chibachuo_east/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_cbce" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">大井町</div><div class="sns-links"><a href="https://www.instagram.com/rashikulaboimachi/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_oi" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">川崎</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_kawasaki/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_kawa" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">本厚木</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_hnat/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/Rashikulab_HNAT" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">浦和</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_urw/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_urw" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">さいたま新都心</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_ss/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_ss" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">大宮西口</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab.o.n/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_on" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">横浜</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_ykhm/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_ykhm" target="_blank" class="sns-badge x">X</a></div></div>
+            </div>
+          </div>
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 東海エリア</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-name">名古屋</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_ngy/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_ngy" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">浜松</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_hmmt/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_hmmt" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">浜松田町</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_tamachi/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashiku_tamachi" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">にゃんこらぼ（浜松）</div><div class="sns-links"><a href="https://rashikulab.jp/nyankolab/" target="_blank" class="sns-badge web">HP</a><a href="https://www.instagram.com/nyankolab_0601/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/nyankolab_hmmt" target="_blank" class="sns-badge x">X</a><a href="https://www.youtube.com/@にゃんこらぼ浜松" target="_blank" class="sns-badge yt">YT</a></div></div>
+            </div>
+          </div>
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 関西エリア</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-name">大阪堺</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_sakai/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulabsakai" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">和泉府中</div><div class="sns-links"><a href="https://www.instagram.com/rashiku_izm/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashiku_izm" target="_blank" class="sns-badge x">X</a></div></div>
+            </div>
+          </div>
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 中国・四国</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-name">広島</div><div class="sns-links"><a href="https://www.instagram.com/rashikulabhiroshima/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_h" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">松山</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_mtym/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_mtym" target="_blank" class="sns-badge x">X</a></div></div>
+            </div>
+          </div>
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 九州エリア</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-name">小倉</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_kokr/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_kokr" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">小倉鍛冶町</div><div class="sns-links"><a href="https://www.instagram.com/k_kajimachi/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/k_kajimachi" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">博多</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_hakata/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_hkt" target="_blank" class="sns-badge x">X</a></div></div>
+              <div class="sns-row"><div class="sns-name">天神</div><div class="sns-links"><a href="https://www.instagram.com/rashiku_tenjin/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashiku_tenjin" target="_blank" class="sns-badge x">X</a></div></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>経費精算の締め日はいつですか？</button>
-        <div class="faq-a"><div class="faq-a-inner">毎月25日が締め日です。25日までに申請された経費は翌月15日の給与と一緒に振り込まれます。<br>領収書の原本は経理部まで提出してください。</div></div>
+
+      <!-- ===== コンテンツ ===== -->
+      <div class="lg">
+        <div class="lg-t parent" onclick="tl(this)"><span class="arr">&#9654;</span> コンテンツ</div>
+        <div class="lg-b">
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> YouTube</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-name">ともは赤髪</div><div class="sns-links"><a href="https://www.youtube.com/@tomohaakagami" target="_blank" class="sns-badge yt">YT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ブラーボりょう切り抜き</div><div class="sns-links"><a href="https://youtube.com/@rashikuru_ryoch" target="_blank" class="sns-badge yt">YT</a></div></div>
+              <div class="sns-row"><div class="sns-name">TOBE切り抜き</div><div class="sns-links"><a href="https://www.youtube.com/@tobe-rashikuru" target="_blank" class="sns-badge yt">YT</a></div></div>
+              <div class="sns-row"><div class="sns-name">にゃんこらぼ浜松</div><div class="sns-links"><a href="https://www.youtube.com/@にゃんこらぼ浜松" target="_blank" class="sns-badge yt">YT</a></div></div>
+              <div class="sns-row"><div class="sns-name">Flow-Lab</div><div class="sns-links"><a href="https://www.youtube.com/@Flow-Lab1" target="_blank" class="sns-badge yt">YT</a></div></div>
+            </div>
+          </div>
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 輪和ヮの日常</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-links">
+                <a href="https://www.youtube.com/channel/UCgpgPbK9DjvQOrIcuy2eNfA" target="_blank" class="sns-badge yt">YT</a>
+                <a href="https://x.com/izakaya_wawawa" target="_blank" class="sns-badge x">X</a>
+                <a href="https://www.tiktok.com/@wawawa.nichijo" target="_blank" class="sns-badge tt">TT</a>
+              </div></div>
+            </div>
+          </div>
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> BUMP切り抜き</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-name">名場面アーカイブス</div><div class="sns-links"><a href="https://www.youtube.com/@%E5%90%8D%E5%A0%B4%E9%9D%A2%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%82%B9" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/meibamenarchives/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user5123171493361" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマ中毒ch</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E4%B8%AD%E6%AF%92ch" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/doramachudokuch/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user76050565132176" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマのツボ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%81%AE%E3%83%84%E3%83%9C" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dramano_tubo/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user4849554113286" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマ名場面集</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E5%90%8D%E5%A0%B4%E9%9D%A2%E9%9B%86" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama_meibamen/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@drama_meibamen" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">1分感動factory</div><div class="sns-links"><a href="https://www.youtube.com/@1%E5%88%86%E6%84%9F%E5%8B%95factory" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/1min_impressed_factory/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@1min_impressed_factory" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">神回だけ切り抜き</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A5%9E%E5%9B%9E%E3%81%A0%E3%81%91%E5%88%87%E3%82%8A%E6%8A%9C%E3%81%8D" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/thebest_only_kirinuki/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@thebest_only_kirinuki" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">バズったドラマシーン</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%90%E3%82%BA%E3%81%A3%E3%81%9F%E3%83%89%E3%83%A9%E3%83%9E%E3%82%B7%E3%83%BC%E3%83%B3" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/buzz_drama_episode/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@buzz_drama_episode" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマベストカット</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%83%99%E3%82%B9%E3%83%88%E3%82%AB%E3%83%83%E3%83%88" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dorama.besutcut/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@doramabesutcut" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">秒でハマる物語</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A7%92%E3%81%A7%E3%83%8F%E3%83%9E%E3%82%8B%E7%89%A9%E8%AA%9E" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/seconds_hamaru_story/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@seconds_hamaru_story" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ショート劇場まとめ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E5%8A%87%E5%A0%B4%E3%81%BE%E3%81%A8%E3%82%81" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/shortgekijomatome/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@shortgekijomatome" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">Base Bits Drama</div><div class="sns-links"><a href="https://www.youtube.com/@BaseBitsDrama" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/basebitsdrama/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@base_bits_drama" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">BUZZDRA</div><div class="sns-links"><a href="https://www.youtube.com/@buzzdra_clips" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/buzzdra_clips/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@buzzdra__clips" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマ切り抜き製作所</div><div class="sns-links"><a href="https://www.youtube.com/@dramaeditlab" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama__editlab/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@drama_editlab" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマクリップ倉庫</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%82%AF%E3%83%AA%E3%83%83%E3%83%97%E5%80%89%E5%BA%AB" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dramaclip_souko/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dramaclip_souko" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">秒で感動シアター</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A7%92%E3%81%A7%E6%84%9F%E5%8B%95%E3%82%B7%E3%82%A2%E3%82%BF%E3%83%BC" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/emotionclip_theater/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@emotionclip_theater" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">エモいシーンまとめ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%A8%E3%83%A2%E3%81%84%E3%82%B7%E3%83%BC%E3%83%B3%E3%81%BE%E3%81%A8%E3%82%81" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/emoishinmatome/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@emoishinmatome" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマまとめ部屋</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A7%92%E3%81%A7%E6%84%9F%E5%8B%95%E3%82%B7%E3%82%A2%E3%82%BF%E3%83%BC" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/doramamatomebeya/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@doramamatomebeya" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">1分で完結ドラマ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%81%BE%E3%81%A8%E3%82%81%E9%83%A8%E5%B1%8B" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/1minidorama/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user272291784992" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマハイライト</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E.%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%88" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama_highlight_000/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user8025730109981" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ショートドラマ速報</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E9%80%9F%E5%A0%B1_BUMP" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/syotodoramasokuhou/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@syotodoramasokuhou" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">神ドラマアーカイブ</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A5%9E%E3%83%89%E3%83%A9%E3%83%9E%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/got_drama_archive_002/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user51170875980164" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">瞬間ドラマch</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%9E%AC%E9%96%93%E3%83%89%E3%83%A9%E3%83%9Ech" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/syunkandoramach/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@syunkandoramach" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマクリップ劇場</div><div class="sns-links"><a href="https://www.youtube.com/channel/UCrlYaT5cSDDrPUG6_JehWFg" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dramacliptheater/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dramacliptheater" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">名作ドラマ切り抜き</div><div class="sns-links"><a href="https://www.youtube.com/channel/UCT9Bk6o50wGCOdSE_klfenQ" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/meisaku.dorama/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@meisaku.dorama" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマの核心</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%81%AE%E6%A0%B8%E5%BF%83" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/doramanokakushin/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@doramanokakushin" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマ見どころch</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E8%A6%8B%E3%81%A9%E3%81%93%E3%82%8Dch" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dorama.midokoro/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dorama.midokoro" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ショートドラマ宝箱</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E5%AE%9D%E7%AE%B1" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/shotodoramatakarabako/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@shotodoramatakarabako" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">心に刺さる1分</div><div class="sns-links"><a href="https://www.youtube.com/@%E5%BF%83%E3%81%AB%E5%88%BA%E3%81%95%E3%82%8B1%E5%88%86" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/kokoronisasaru1pun/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@kokoronisasaru1pun" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマの時間</div><div class="sns-links"><a href="https://www.youtube.com/channel/UC02sSK42zShLoX4YjFbFJfQ" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama.is.time/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dorama_is_time" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ドラマ切り抜き本舗</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E5%88%87%E3%82%8A%E6%8A%9C%E3%81%8D%E6%9C%AC%E8%88%97" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama_kirinuki_honpo1028/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@drama_kirinuki_honpo" target="_blank" class="sns-badge tt">TT</a></div></div>
+              <div class="sns-row"><div class="sns-name">ショートドラマの沼</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E3%81%AE%E6%B2%BC" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/short_drama_numa/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@short_drama_numa" target="_blank" class="sns-badge tt">TT</a></div></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>備品を購入したい場合はどうすればよいですか？</button>
-        <div class="faq-a"><div class="faq-a-inner">マイページ・拠点ハブの「備品管理」から購入申請フォームに記入してください。<br>5,000円未満：上長承認のみ<br>5,000円以上：上長承認＋総務部承認が必要です。</div></div>
+
+      <!-- ===== 販売サイト ===== -->
+      <div class="lg">
+        <div class="lg-t parent" onclick="tl(this)"><span class="arr">&#9654;</span> 販売サイト</div>
+        <div class="lg-b">
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> 音楽・販売サイト</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-name">ラシクラボMUSIC</div><div class="sns-links"><a href="https://music.rashikulab.jp/" target="_blank" class="sns-badge web">HP</a></div></div>
+              <div class="sns-row"><div class="sns-name">minne</div><div class="sns-links"><a href="https://minne.com/@rashikulab" target="_blank" class="sns-badge shop">minne</a></div></div>
+              <div class="sns-row"><div class="sns-name">BOOTH（ラシクラボ）</div><div class="sns-links"><a href="https://rashikulab.booth.pm/" target="_blank" class="sns-badge shop">BOOTH</a></div></div>
+              <div class="sns-row"><div class="sns-name">イラストAC</div><div class="sns-links"><a href="https://www.ac-illust.com/main/profile.php?id=24137464&area=1&page=1" target="_blank" class="sns-badge shop">DL</a></div></div>
+            </div>
+          </div>
+          <div class="lg">
+            <div class="lg-t" onclick="tl(this)"><span class="arr">&#9654;</span> ラシクル商店</div>
+            <div class="lg-b">
+              <div class="sns-row"><div class="sns-links">
+                <a href="https://www.instagram.com/rashikuru_store/" target="_blank" class="sns-badge ig">IG</a>
+                <a href="https://x.com/rashikuru_store" target="_blank" class="sns-badge x">X</a>
+                <a href="https://rashikuru.booth.pm/items" target="_blank" class="sns-badge shop">BOOTH</a>
+              </div></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>会議室の予約方法は？</button>
-        <div class="faq-a"><div class="faq-a-inner">Googleカレンダーで会議室リソースを選択して予約できます。<br>利用後は原状復帰（椅子を戻す、ホワイトボードを消す）をお願いします。</div></div>
-      </div>
-      <div>
-        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>パスワードを忘れた・ロックされた場合は？</button>
-        <div class="faq-a"><div class="faq-a-inner">ヘルプデスクへ連絡してください（内線: 999）。<br>本人確認の上、パスワードリセットを行います。リセット後は速やかに新しいパスワードを設定してください。</div></div>
-      </div>
-      <div>
-        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>在宅勤務の申請はどうすればよいですか？</button>
-        <div class="faq-a"><div class="faq-a-inner">前日までにマイページ・拠点ハブの「申請・届出」から在宅勤務申請を提出してください。<br>在宅勤務中はタイムカードの打刻を忘れずにお願いします。</div></div>
-      </div>
-      <div>
-        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>社内イベントの企画を出したいのですが？</button>
-        <div class="faq-a"><div class="faq-a-inner">社内掲示板の「イベント企画提案」フォームから提出できます。<br>予算が必要な場合は総務部との事前相談をお願いします。過去のイベント事例はマニュアルページで確認できます。</div></div>
-      </div>
-      <div>
-        <button class="faq-q" onclick="tf(this)"><span class="q-icon">Q</span>住所変更・氏名変更の届出は？</button>
-        <div class="faq-a"><div class="faq-a-inner">マイページ・拠点ハブの「申請・届出」から変更届を提出してください。<br>変更後10日以内に届出をお願いします。届出書類は人事・労務部門へ自動送信されます。</div></div>
-      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== ツール + 役員/管理者限定 ===== -->
+<div class="full-section">
+  <div class="card">
+    <div class="card-title"><span class="icon blue">&#128295;</span>ツール</div>
+    <p class="search-desc" style="margin-bottom:10px">各種便利ツールへのリンク</p>
+    <div class="hub-grid">
+      <a href="#" target="_blank" class="hub-btn">Google Workspace</a>
+      <a href="#" target="_blank" class="hub-btn">社内チャット</a>
     </div>
   </div>
 
+  <div class="admin-card">
+    <div class="card-title"><span class="icon" style="background:#FFD54F;color:#1a1a2e">&#128274;</span>役員/管理者限定</div>
+    <p class="admin-sub">アクセス権限が必要です</p>
+    <div class="admin-label">&#128202; KPI表</div>
+    <div class="admin-grid">
+      <a href="#" target="_blank" class="admin-btn">事業所ごと</a>
+      <a href="#" target="_blank" class="admin-btn">全体</a>
+      <a href="#" target="_blank" class="admin-btn">年間</a>
+      <a href="#" target="_blank" class="admin-btn">アカデミー</a>
+      <a href="#" target="_blank" class="admin-btn">コネクト</a>
+      <a href="#" target="_blank" class="admin-btn">NekotoWork</a>
+      <a href="#" target="_blank" class="admin-btn">STUN</a>
+      <a href="#" target="_blank" class="admin-btn">ラシクルカフェ売上</a>
+    </div>
+    <div class="admin-grid">
+      <a href="#" target="_blank" class="admin-btn">&#128187; 役員会議アプリ</a>
+    </div>
+  </div>
 </div>
 
 <script>
 function t(e){e.classList.toggle('open');e.nextElementSibling.classList.toggle('open')}
-function tf(e){e.nextElementSibling.classList.toggle('open')}
 function tl(e){var a=e.querySelector('.arr');var b=e.nextElementSibling;b.classList.toggle('open');a.innerHTML=b.classList.contains('open')?'&#9660;':'&#9654;'}
 
-/* ==========================================
-   Blogger 連携設定
-   ==========================================
-   使い方:
-   1. Blogger (blogger.com) でブログを1つ作成
-   2. 記事を投稿する際に「ラベル」を設定:
-      - 社内通達 → ラベル「通達」を付ける（サブラベル: 規程, 人事, 総務 など）
-      - 社内ニュース → ラベル「ニュース」を付ける（サブラベル: イベント, 告知 など）
-   3. 下の BLOG_URL にブログのURLを設定
-   ========================================== */
-
+/* Blogger */
 var BLOG_URL = 'https://rashikurutest.blogspot.com';
-// ↑↑↑ ここを実際のBloggerのURLに変更してください ↑↑↑
-
 var CAT_COLORS = {
   '規程':'rule','人事':'hr','総務':'hr','イベント':'event','告知':'info',
   '重要':'rule','お知らせ':'info','研修':'event'
@@ -735,88 +741,45 @@ function fetchBlogger(label, targetId, loadingId, max) {
   document.body.appendChild(s);
 }
 
-// 社内通達 = ラベル「通達」、社内ニュース = ラベル「ニュース」で取得
 fetchBlogger('通達', 'noticeList', 'noticeLoading', 10);
 fetchBlogger('ニュース', 'newsList', 'newsLoading', 10);
 
-/* ==========================================
-   ポータル内検索
-   ========================================== */
+/* Search */
 function buildSearchIndex() {
   var idx = [];
-  // 1. Accordion items (社内管理部門 + 各種情報カテゴリ)
   document.querySelectorAll('.acc-i').forEach(function(el) {
-    var section = '';
     var card = el.closest('.card');
-    if (card) {
-      var title = card.querySelector('.card-title');
-      if (title) section = title.textContent.trim();
-    }
+    var section = card ? (card.querySelector('.card-title') || {}).textContent || '' : '';
     var parent = el.closest('.acc-b');
-    var parentHeader = parent ? parent.previousElementSibling : null;
-    var category = parentHeader ? parentHeader.textContent.trim().replace('▶','').trim() : '';
-    idx.push({
-      text: el.textContent.trim(),
-      cat: 'info', catLabel: section,
-      sub: category,
-      href: el.getAttribute('href'),
-      target: el.getAttribute('target') || ''
-    });
+    var ph = parent ? parent.previousElementSibling : null;
+    var category = ph ? ph.textContent.trim().replace('▶','').trim() : '';
+    idx.push({ text: el.textContent.trim(), cat: 'info', catLabel: section.trim(), sub: category, href: el.getAttribute('href'), target: el.getAttribute('target') || '' });
   });
-  // 2. Hub buttons
   document.querySelectorAll('.hub-btn').forEach(function(el) {
-    idx.push({
-      text: el.textContent.trim(),
-      cat: 'hub', catLabel: 'マイページ・拠点ハブ',
-      sub: '',
-      href: el.getAttribute('href'),
-      target: el.getAttribute('target') || ''
-    });
+    var card = el.closest('.card') || el.closest('.admin-card');
+    var section = card ? (card.querySelector('.card-title') || {}).textContent || '' : '';
+    idx.push({ text: el.textContent.trim(), cat: 'hub', catLabel: section.trim(), sub: '', href: el.getAttribute('href'), target: el.getAttribute('target') || '' });
   });
-  // 3. Link items (各種リンク集)
-  document.querySelectorAll('.lg-i').forEach(function(el) {
-    idx.push({
-      text: el.textContent.trim(),
-      cat: 'link', catLabel: '各種リンク集',
-      sub: 'ツール',
-      href: el.getAttribute('href'),
-      target: el.getAttribute('target') || ''
-    });
+  document.querySelectorAll('.sc-btn').forEach(function(el) {
+    idx.push({ text: el.textContent.trim(), cat: 'sc', catLabel: '便利ショートカット', sub: '', href: el.getAttribute('href'), target: '_blank' });
   });
-  // 4. SNS rows
   document.querySelectorAll('.sns-row').forEach(function(el) {
     var name = el.querySelector('.sns-name');
     var nameText = name ? name.textContent.trim() : '';
     var badges = el.querySelectorAll('.sns-badge');
     var links = [];
     badges.forEach(function(b) { links.push(b.textContent.trim()); });
-    // find parent toggle label
     var parentLg = el.closest('.lg-b');
     var parentLabel = '';
     if (parentLg && parentLg.previousElementSibling) {
       parentLabel = parentLg.previousElementSibling.textContent.trim().replace('▶','').replace('▼','').trim();
     }
     if (nameText || links.length) {
-      idx.push({
-        text: nameText || links.join(' '),
-        cat: 'link', catLabel: '各種リンク集',
-        sub: parentLabel,
-        href: badges.length ? badges[0].getAttribute('href') : '#',
-        target: '_blank'
-      });
+      idx.push({ text: nameText || links.join(' '), cat: 'link', catLabel: '各種リンク集', sub: parentLabel, href: badges.length ? badges[0].getAttribute('href') : '#', target: '_blank' });
     }
   });
-  // 5. FAQ items
-  document.querySelectorAll('.faq-q').forEach(function(el) {
-    var answer = el.nextElementSibling;
-    var answerText = answer ? answer.textContent.trim().substring(0, 80) : '';
-    idx.push({
-      text: el.textContent.replace('Q','').trim(),
-      cat: 'faq', catLabel: 'FAQ',
-      sub: answerText + '...',
-      href: null,
-      faqEl: el
-    });
+  document.querySelectorAll('.admin-btn').forEach(function(el) {
+    idx.push({ text: el.textContent.trim(), cat: 'hub', catLabel: '役員/管理者限定', sub: '', href: el.getAttribute('href'), target: '_blank' });
   });
   return idx;
 }
@@ -833,19 +796,14 @@ function doSearch() {
   var q = document.getElementById('portalSearch').value.trim().toLowerCase();
   var results = document.getElementById('searchResults');
   var clearBtn = document.getElementById('searchClear');
-
   if (!q) { results.style.display = 'none'; clearBtn.style.display = 'none'; return; }
   clearBtn.style.display = 'block';
-
   if (!searchIndex) searchIndex = buildSearchIndex();
-
   var matches = [];
   searchIndex.forEach(function(item) {
     var searchable = (item.text + ' ' + item.catLabel + ' ' + item.sub).toLowerCase();
     if (searchable.indexOf(q) !== -1) matches.push(item);
   });
-
-  // Also search Blogger feed items that have been loaded
   document.querySelectorAll('.feed-item').forEach(function(el) {
     var titleEl = el.querySelector('.fi-t');
     var dateEl = el.querySelector('.fi-d');
@@ -854,57 +812,31 @@ function doSearch() {
     var txt = titleEl.textContent.trim();
     if (txt.toLowerCase().indexOf(q) !== -1) {
       var catEl = el.querySelector('.cat');
-      matches.push({
-        text: txt,
-        cat: 'news', catLabel: catEl ? catEl.textContent.trim() : 'ニュース',
-        sub: dateEl ? dateEl.textContent.trim() : '',
-        href: detEl ? detEl.getAttribute('href') : '#',
-        target: '_blank'
-      });
+      matches.push({ text: txt, cat: 'news', catLabel: catEl ? catEl.textContent.trim() : 'ニュース', sub: dateEl ? dateEl.textContent.trim() : '', href: detEl ? detEl.getAttribute('href') : '#', target: '_blank' });
     }
   });
-
   var html = '';
   if (matches.length === 0) {
     html = '<div class="sr-empty">「' + escHtml(q) + '」に一致する項目が見つかりません</div>';
   } else {
     html = '<div class="sr-count">' + matches.length + ' 件見つかりました</div>';
     matches.forEach(function(m, i) {
-      if (i >= 30) return; // limit display
+      if (i >= 30) return;
       var catClass = 'cat-' + m.cat;
       var highlighted = highlightText(m.text, q);
       if (m.href && m.href !== '#') {
         html += '<a href="' + escHtml(m.href) + '" target="' + (m.target||'') + '" class="sr-item">';
-      } else if (m.faqEl) {
-        html += '<a href="javascript:void(0)" onclick="openFaqResult(' + i + ')" class="sr-item">';
       } else {
         html += '<div class="sr-item">';
       }
       html += '<span class="sr-cat ' + catClass + '">' + escHtml(m.catLabel) + '</span>';
       html += '<span class="sr-title">' + highlighted + '</span>';
       if (m.sub) html += '<div class="sr-sub">' + escHtml(m.sub) + '</div>';
-      if (m.href && m.href !== '#') { html += '</a>'; }
-      else if (m.faqEl) { html += '</a>'; }
-      else { html += '</div>'; }
+      html += (m.href && m.href !== '#') ? '</a>' : '</div>';
     });
   }
   results.innerHTML = html;
   results.style.display = 'block';
-
-  // Store matches for FAQ click handler
-  window._searchMatches = matches;
-}
-
-function openFaqResult(i) {
-  var m = window._searchMatches[i];
-  if (m && m.faqEl) {
-    m.faqEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    if (!m.faqEl.nextElementSibling.classList.contains('open')) {
-      m.faqEl.nextElementSibling.classList.add('open');
-    }
-    m.faqEl.style.background = '#FFEE58';
-    setTimeout(function() { m.faqEl.style.background = ''; }, 2000);
-  }
 }
 
 function clearSearch() {

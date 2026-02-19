@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>事業所運営 Q&A - ラシクルinformation</title>
+<style>
+  :root {
+    --primary: #7CB342;
+    --primary-dark: #558B2F;
+    --primary-light: #C5E1A5;
+    --primary-pale: #F1F8E9;
+    --accent: #FF8F00;
+    --text: #333;
+    --text-light: #666;
+    --bg: #F5F5F5;
+    --white: #fff;
+    --border: #E0E0E0;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --green: #2E7D32;
+    --green-dark: #1B5E20;
+    --green-pale: #E8F5E9;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; font-family: 'Segoe UI','Hiragino Kaku Gothic ProN','Noto Sans JP','Meiryo',sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  .container { max-width: 800px; margin: 24px auto; padding: 0 16px; }
+
+  .intro-card {
+    background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 24px; margin-bottom: 24px; text-align: center;
+  }
+  .intro-card p { font-size: 14px; color: var(--text-light); line-height: 1.8; }
+  .intro-card .highlight {
+    display: inline-block; background: var(--green-pale); color: var(--green-dark);
+    padding: 2px 10px; border-radius: 4px; font-weight: 600; font-size: 13px;
+  }
+
+  .section-label {
+    font-size: 16px; font-weight: 700; color: var(--green-dark);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+    padding-left: 4px;
+  }
+  .section-label .icon {
+    width: 28px; height: 28px; border-radius: 6px; background: var(--green);
+    color: var(--white); display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .faq-card {
+    background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+    margin-bottom: 20px; overflow: hidden;
+  }
+
+  .faq-q {
+    display: flex; align-items: center; gap: 10px; padding: 16px 20px;
+    cursor: pointer; font-weight: 600; font-size: 14px; border: none;
+    background: none; width: 100%; text-align: left; color: var(--text);
+    border-bottom: 1px solid #f0f0f0; transition: background .15s;
+  }
+  .faq-q:hover { background: var(--green-pale); }
+  .faq-q .q-badge {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--green);
+    color: var(--white); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .faq-q .arr { transition: transform .3s; font-size: 11px; margin-left: auto; color: #999; }
+  .faq-q.open .arr { transform: rotate(90deg); }
+
+  .faq-a {
+    max-height: 0; overflow: hidden; transition: max-height .4s ease;
+  }
+  .faq-a.open { max-height: 600px; }
+  .faq-a-inner {
+    padding: 16px 20px 16px 56px; font-size: 13px; color: var(--text-light);
+    line-height: 1.9; border-bottom: 1px solid #f5f5f5;
+  }
+  .faq-a-inner strong { color: var(--text); }
+  .faq-a-inner .step {
+    display: inline-block; background: var(--green-pale); color: var(--green-dark);
+    padding: 1px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 4px;
+  }
+
+  /* Contact box at bottom */
+  .contact-box {
+    background: linear-gradient(135deg, #FFF8E1 0%, #FFF3E0 100%);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius); padding: 28px; margin-top: 32px;
+    text-align: center;
+  }
+  .contact-box h3 {
+    font-size: 16px; color: #E65100; margin-bottom: 6px;
+  }
+  .contact-box .sub { font-size: 13px; color: var(--text-light); margin-bottom: 8px; }
+  .contact-box .note { font-size: 12px; color: var(--text-light); line-height: 1.8; }
+
+  @media (max-width: 640px) {
+    .faq-a-inner { padding-left: 20px; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="container">
+
+  <div class="intro-card">
+    <p>事業所運営に関するよくあるご質問をまとめています。<br>
+    <span class="highlight">日次実績</span> <span class="highlight">施設外就労</span> <span class="highlight">利用者対応</span> <span class="highlight">モニタリング</span> に関するお問い合わせは、まず以下のQ&Aをご確認ください。</p>
+  </div>
+
+  <div class="section-label"><span class="icon">&#128202;</span>日次実績・報告</div>
+  <div class="faq-card">
+    <button class="faq-q open" onclick="tf(this)"><span class="q-badge">Q</span>日次実績の入力方法は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a open"><div class="faq-a-inner">
+      マイページ＞実績報告から入力してください。<br>
+      <strong>当日中の入力を推奨</strong>しています。翌営業日午前中が締切です。
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>実績の修正・取り消しは？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <strong>当月内</strong>であればマイページから修正可能です。<br>
+      月締め後はサビ管経由で総務へご連絡ください。
+    </div></div>
+  </div>
+
+  <div class="section-label"><span class="icon">&#127970;</span>施設外就労</div>
+  <div class="faq-card">
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>施設外就労の報告手順は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> 施設外就労先への出勤をタイムカードで打刻<br>
+      <span class="step">STEP 2</span> 日次実績に施設外の活動内容を記録<br>
+      <span class="step">STEP 3</span> 月末に施設外就労報告書をサビ管へ提出
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>施設外就労先でトラブルがあった場合は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      まず<strong>サビ管に電話連絡</strong>してください。<br>
+      緊急時は本部（総務）にも連絡してください。<br>
+      <strong>報告書を当日中に提出</strong>してください。
+    </div></div>
+  </div>
+
+  <div class="section-label"><span class="icon">&#128101;</span>利用者対応</div>
+  <div class="faq-card">
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>新しい利用者が入所する際の手続きは？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> 相談支援専門員からの紹介<br>
+      <span class="step">STEP 2</span> 見学・体験の日程調整<br>
+      <span class="step">STEP 3</span> 契約書類の準備（サビ管）<br>
+      <span class="step">STEP 4</span> 個別支援計画の作成
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>利用者の体調不良・緊急時の対応は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <strong>軽度：</strong>休憩スペースで様子見、サビ管に報告。<br>
+      <strong>重度：</strong>119番通報、家族へ連絡、サビ管・本部へ報告。<br>
+      <strong>※ AED設置場所を事前に確認しておいてください。</strong>
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>モニタリング報告の提出期限は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      利用開始後<strong>3ヶ月</strong>、以降<strong>6ヶ月ごと</strong>に提出が必要です。<br>
+      期限の<strong>2週間前</strong>にはサビ管へドラフトを提出してください。
+    </div></div>
+  </div>
+
+  <div class="section-label"><span class="icon">&#128295;</span>事業所環境・その他</div>
+  <div class="faq-card">
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>事業所の設備トラブルの連絡先は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      まず<strong>総務へ連絡</strong>してください。<br>
+      緊急（水漏れ・停電等）は管理会社にも連絡してください。<br>
+      連絡先は事業所ページで確認可能です。
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>備品の補充・購入申請は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      マイページ＞備品管理から申請してください。<br>
+      <strong>5,000円未満：</strong>上長承認のみ<br>
+      <strong>5,000円以上：</strong>総務承認も必要です。
+    </div></div>
+
+    <button class="faq-q" onclick="tf(this)"><span class="q-badge">Q</span>事業所間で利用者を移動させたい場合は？<span class="arr">&#9654;</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <span class="step">STEP 1</span> 両事業所のサビ管で協議<br>
+      <span class="step">STEP 2</span> 利用者・家族の意向確認<br>
+      <span class="step">STEP 3</span> 相談支援専門員へ連絡<br>
+      <span class="step">STEP 4</span> 契約変更手続き
+    </div></div>
+  </div>
+
+  <!-- Contact box -->
+  <div class="contact-box">
+    <h3>&#128161; 解決しませんでしたか？</h3>
+    <p class="sub">上記で解決しない場合は、お気軽にご相談ください。</p>
+    <p class="note">事業所運営に関するご質問は、まず<strong>サビ管（サービス管理責任者）</strong>へご相談ください。<br>
+    サビ管で解決しない場合は、<strong>総務</strong>までお問い合わせください。</p>
+  </div>
+
+</div>
+
+<script>
+function tf(e){e.classList.toggle('open');e.nextElementSibling.classList.toggle('open')}
+</script>
+</body>
+</html>
