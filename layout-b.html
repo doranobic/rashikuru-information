@@ -345,6 +345,7 @@
   @media (max-width: 1024px) {
     .dashboard-grid { grid-template-columns: 1fr; }
     .hub-grid { grid-template-columns: 1fr 1fr; }
+    .news-2col { grid-template-columns: 1fr !important; }
   }
   @media (max-width: 768px) {
     .sidebar { transform: translateX(-100%); }
@@ -415,24 +416,26 @@
 <div class="main-content">
   <div class="dashboard-grid">
 
-    <!-- ===== SECTION: HOME / 通達 ===== -->
-    <div id="section-home"></div>
-
-    <!-- 社内通達 -->
-    <div class="widget" id="section-news">
-      <div class="widget-header"><span class="w-icon orange">&#128227;</span>社内通達</div>
-      <div class="widget-body scroll-feed">
-        <div id="noticeLoading" class="feed-loading">読み込み中...</div>
-        <ul class="feed" id="noticeList"></ul>
-      </div>
-    </div>
-
-    <!-- 社内ニュース -->
-    <div class="widget">
-      <div class="widget-header"><span class="w-icon green">&#128240;</span>社内ニュース</div>
-      <div class="widget-body scroll-feed">
-        <div id="newsLoading" class="feed-loading">読み込み中...</div>
-        <ul class="feed" id="newsList"></ul>
+    <!-- ===== SECTION: 通達・ニュース (full width, 2 columns inside) ===== -->
+    <div class="widget full-width" id="section-home">
+      <div class="widget-header"><span class="w-icon orange">&#128227;</span>社内通達・ニュース</div>
+      <div class="widget-body" id="section-news">
+        <div class="news-2col" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div>
+            <div style="font-weight:700;font-size:14px;color:var(--sidebar-bg);margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--accent);">&#128227; 社内通達</div>
+            <div class="scroll-feed">
+              <div id="noticeLoading" class="feed-loading">読み込み中...</div>
+              <ul class="feed" id="noticeList"></ul>
+            </div>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:14px;color:var(--sidebar-bg);margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--primary);">&#128240; 社内ニュース</div>
+            <div class="scroll-feed">
+              <div id="newsLoading" class="feed-loading">読み込み中...</div>
+              <ul class="feed" id="newsList"></ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
