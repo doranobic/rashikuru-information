@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>事業所一覧 - ラシクルinformation</title>
+<style>
+  :root {
+    --primary: #7CB342;
+    --primary-dark: #558B2F;
+    --primary-light: #C5E1A5;
+    --primary-pale: #F1F8E9;
+    --accent: #FF8F00;
+    --text: #333;
+    --text-light: #666;
+    --bg: #F5F5F5;
+    --white: #fff;
+    --border: #E0E0E0;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --radius: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; font-family: 'Segoe UI','Hiragino Kaku Gothic ProN','Noto Sans JP','Meiryo',sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+
+  .page-title {
+    font-size: 18px; font-weight: 800; color: var(--primary-dark);
+    margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
+  }
+  .page-sub { font-size: 12px; color: var(--text-light); margin-bottom: 16px; }
+
+  /* Search */
+  .search-input {
+    width: 100%; padding: 9px 14px; border: 2px solid var(--border);
+    border-radius: 8px; font-size: 13px; outline: none; transition: border-color .2s;
+    margin-bottom: 20px;
+  }
+  .search-input:focus { border-color: var(--primary); }
+
+  /* Section */
+  .section { margin-bottom: 24px; }
+  .section-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 15px; font-weight: 700; color: var(--white);
+    padding: 6px 16px; border-radius: 8px 8px 0 0;
+  }
+  .section-badge.green { background: var(--primary-dark); }
+  .section-badge.orange { background: var(--accent); }
+
+  .region-label {
+    background: #263238; color: var(--white); font-size: 12px; font-weight: 700;
+    padding: 6px 14px; letter-spacing: 1px;
+  }
+
+  /* Table */
+  .tbl-wrap {
+    background: var(--white); border-radius: 0 var(--radius) var(--radius) var(--radius);
+    box-shadow: var(--shadow); overflow-x: auto; margin-bottom: 2px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th {
+    text-align: left; padding: 7px 10px; background: #FAFAFA;
+    font-size: 10px; color: var(--text-light); font-weight: 700;
+    border-bottom: 2px solid var(--border); white-space: nowrap;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  td { padding: 9px 10px; border-bottom: 1px solid #f3f3f3; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--primary-pale); }
+
+  .name-main { font-weight: 700; font-size: 13px; color: var(--text); }
+  .corp { font-size: 11px; color: var(--text-light); }
+  .addr { font-size: 11px; color: var(--text-light); line-height: 1.5; }
+  .tel { font-size: 12px; white-space: nowrap; }
+  .tel a { color: var(--primary-dark); text-decoration: none; }
+  .tel a:hover { text-decoration: underline; }
+  .date { font-size: 11px; color: var(--text-light); white-space: nowrap; }
+  .note { font-size: 10px; color: #999; font-style: italic; }
+
+  .tag {
+    display: inline-block; font-size: 9px; font-weight: 700;
+    padding: 1px 6px; border-radius: 3px; margin-left: 4px; vertical-align: middle;
+  }
+  .tag.new { background: #FFCDD2; color: #C62828; }
+  .tag.ext { background: #E3F2FD; color: #1565C0; }
+
+  .stat-row {
+    display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .stat-card {
+    background: var(--white); border-radius: 8px; box-shadow: var(--shadow);
+    padding: 12px 18px; display: flex; align-items: center; gap: 10px;
+  }
+  .stat-num { font-size: 24px; font-weight: 800; color: var(--primary-dark); }
+  .stat-label { font-size: 11px; color: var(--text-light); }
+
+  @media (max-width: 768px) {
+    th, td { padding: 7px 6px; font-size: 11px; }
+    .name-main { font-size: 12px; }
+    .container { padding: 10px; }
+    .stat-card { padding: 10px 14px; }
+    .stat-num { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-title">&#127970; 事業所一覧</div>
+  <div class="page-sub">ラシクルグループ全事業所の基本情報</div>
+
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-num">27</div><div class="stat-label">事業所</div></div>
+    <div class="stat-card"><div class="stat-num">13</div><div class="stat-label">施設外</div></div>
+    <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">エリア</div></div>
+  </div>
+
+  <input type="text" class="search-input" id="searchInput" placeholder="施設名・住所・法人名で検索..." oninput="filterRows()">
+
+  <!-- ========== 事業所 ========== -->
+  <div class="section">
+    <div class="section-badge green">&#127970; 事業所</div>
+    <div class="tbl-wrap">
+      <table id="mainTable">
+      <!-- 関東 -->
+      <tr class="region-row"><td colspan="6" class="region-label">関東</td></tr>
+      <tr class="header-row"><th>施設名</th><th>運営法人</th><th>住所</th><th>TEL</th><th>FAX</th><th>開所日</th></tr>
+      <tr data-search="ラシクラボさいたま新都心 サイクツ さいたま市 関東"><td><div class="name-main">ラシクラボさいたま新都心</div></td><td class="corp">㈱サイクツ</td><td class="addr">〒330-0843 埼玉県さいたま市大宮区吉敷町4丁目248-5 新都心プラチナビル1階</td><td class="tel"><a href="tel:048-871-5778">048-871-5778</a></td><td class="tel">048-871-5779</td><td class="date">2023/11/1</td></tr>
+      <tr data-search="ラシクラボ大宮西口 サイクツ さいたま市 関東"><td><div class="name-main">ラシクラボ大宮西口</div></td><td class="corp">㈱サイクツ</td><td class="addr">〒330-0854 埼玉県さいたま市大宮区桜木町2丁目3-69 大原第一ビル5階</td><td class="tel"><a href="tel:048-658-9686">048-658-9686</a></td><td class="tel">048-658-9719</td><td class="date">2024/10/1</td></tr>
+      <tr data-search="ラシクラボ浦和 ULT さいたま市 関東"><td><div class="name-main">ラシクラボ浦和</div></td><td class="corp">㈱ULT</td><td class="addr">〒330-0063 埼玉県さいたま市浦和区高砂3丁目2-10 草野高砂ビル2階</td><td class="tel"><a href="tel:048-799-3221">048-799-3221</a></td><td class="tel">048-799-3272</td><td class="date">2025/11/1</td></tr>
+      <tr data-search="ラシクラボ千葉中央 サイクツ 千葉市 関東"><td><div class="name-main">ラシクラボ千葉中央</div></td><td class="corp">㈱サイクツ</td><td class="addr">〒260-0021 千葉県千葉市中央区新宿2-5-16 LKパークビル7F</td><td class="tel"><a href="tel:043-445-8938">043-445-8938</a></td><td class="tel">043-445-8939</td><td class="date">2024/5/1</td></tr>
+      <tr data-search="ラシクラボ千葉中央東口 サイクツ 千葉市 関東"><td><div class="name-main">ラシクラボ千葉中央東口</div></td><td class="corp">㈱サイクツ</td><td class="addr">〒260-0014 千葉県千葉市中央区本千葉町1-1 日土地千葉中央ビル202号室</td><td class="tel"><a href="tel:043-441-4933">043-441-4933</a></td><td class="tel">043-441-4934</td><td class="date">2024/10/1</td></tr>
+      <tr data-search="ラシクラボ大井町 ULT 品川区 東京 関東"><td><div class="name-main">ラシクラボ大井町</div></td><td class="corp">㈱ULT</td><td class="addr">〒140-0011 東京都品川区東大井5-7-10 クレストワン5F</td><td class="tel"><a href="tel:03-6260-1728">03-6260-1728</a></td><td class="tel">03-6260-1729</td><td class="date">2025/4/1</td></tr>
+      <tr data-search="ラシクラボコネクト東京 ULT 品川区 東京 関東"><td><div class="name-main">ラシクラボコネクト東京</div></td><td class="corp">㈱ULT</td><td class="addr">〒140-0011 東京都品川区東大井5-7-10 クレストワン5F</td><td class="tel"><a href="tel:03-6260-1728">03-6260-1728</a></td><td class="tel">03-6260-1729</td><td class="date">2025/4/1</td></tr>
+      <tr data-search="ラシクラボ武蔵小山 ULT 品川区 東京 関東"><td><div class="name-main">ラシクラボ武蔵小山 <span class="tag new">NEW</span></div></td><td class="corp">㈱ULT</td><td class="addr">〒142-0063 東京都品川区荏原3-1-7 エスティメゾン武蔵小山 1階 101号室</td><td class="tel"><a href="tel:03-6426-7823">03-6426-7823</a></td><td class="tel">03-6426-7828</td><td class="date">2026/3/1</td></tr>
+      <tr data-search="ラシクラボ横浜 ULT 横浜市 神奈川 関東"><td><div class="name-main">ラシクラボ横浜</div></td><td class="corp">㈱ULT</td><td class="addr">〒231-0041 神奈川県横浜市中区吉田町48 タクエー吉田町ビル2A</td><td class="tel"><a href="tel:045-308-9901">045-308-9901</a></td><td class="tel">045-308-9902</td><td class="date">2025/7/1</td></tr>
+      <tr data-search="ラシクラボ川崎 UNUS 川崎市 神奈川 関東"><td><div class="name-main">ラシクラボ川崎</div></td><td class="corp">㈱UNUS</td><td class="addr">〒210-0005 神奈川県川崎市川崎区東田町11-22 FTKビル7階</td><td class="tel"><a href="tel:044-400-1580">044-400-1580</a></td><td class="tel">044-400-1581</td><td class="date">2023/9/1</td></tr>
+      <tr data-search="ラシクラボ本厚木 Passie 厚木市 神奈川 関東"><td><div class="name-main">ラシクラボ本厚木</div></td><td class="corp">㈱Passie</td><td class="addr">〒243-0014 神奈川県厚木市旭町2丁目8-21 YSビル2-B</td><td class="tel"><a href="tel:046-280-6025">046-280-6025</a></td><td class="tel">046-280-6034</td><td class="date">2024/5/1</td></tr>
+
+      <!-- 東海 -->
+      <tr class="region-row"><td colspan="6" class="region-label">東海</td></tr>
+      <tr class="header-row"><th>施設名</th><th>運営法人</th><th>住所</th><th>TEL</th><th>FAX</th><th>開所日</th></tr>
+      <tr data-search="ラシクラボ名古屋 ULT 名古屋市 愛知 東海"><td><div class="name-main">ラシクラボ名古屋</div></td><td class="corp">㈱ULT</td><td class="addr">〒460-0008 愛知県名古屋市中区栄3丁目32番24号 コジマテントビル301</td><td class="tel"><a href="tel:052-211-9478">052-211-9478</a></td><td class="tel">052-211-9479</td><td class="date">2024/12/1</td></tr>
+      <tr data-search="ラシクラボ浜松 ULT 浜松市 静岡 東海"><td><div class="name-main">ラシクラボ浜松</div></td><td class="corp">㈱ULT</td><td class="addr">〒430-0928 静岡県浜松市中央区板屋町102-8 板屋町AMSビル1F</td><td class="tel"><a href="tel:053-401-4001">053-401-4001</a></td><td class="tel">053-401-4002</td><td class="date">2023/6/1</td></tr>
+      <tr data-search="ラシクラボ浜松田町 ULT 浜松市 静岡 東海"><td><div class="name-main">ラシクラボ浜松田町</div></td><td class="corp">㈱ULT</td><td class="addr">〒430-0944 静岡県浜松市中央区田町327-24 万年橋パークビル601</td><td class="tel"><a href="tel:053-523-7423">053-523-7423</a></td><td class="tel">053-523-7424</td><td class="date">2025/6/1</td></tr>
+      <tr data-search="ラシクラボ静岡 ULT 静岡市 静岡 東海"><td><div class="name-main">ラシクラボ静岡 <span class="tag new">NEW</span></div></td><td class="corp">㈱ULT</td><td class="addr">〒420-0858 静岡県静岡市葵区伝馬町18-8 アミイチ伝馬町ビル2階</td><td class="tel"><span class="note">未設置</span></td><td class="tel"><span class="note">未設置</span></td><td class="date">2026/5/1</td></tr>
+      <tr data-search="にゃんこらぼ浜松 ULT 浜松市 静岡 東海"><td><div class="name-main">にゃんこらぼ浜松</div></td><td class="corp">㈱ULT</td><td class="addr">〒430-0928 静岡県浜松市中央区板屋町673 A-BIA.BLD 1F</td><td class="tel"><a href="tel:053-401-4415">053-401-4415</a></td><td class="tel">053-401-4416</td><td class="date">2024/6/1</td></tr>
+      <tr data-search="ラシクラボアカデミー浜松 ULT 浜松市 静岡 東海"><td><div class="name-main">ラシクラボアカデミー浜松</div></td><td class="corp">㈱ULT</td><td class="addr">〒430-0807 静岡県浜松市中央区佐藤2-31-16 佐藤二丁目ロードサイドハウス</td><td class="tel"><a href="tel:053-545-4613">053-545-4613</a></td><td class="tel">053-545-4614</td><td class="date">2025/1/1</td></tr>
+
+      <!-- 関西 -->
+      <tr class="region-row"><td colspan="6" class="region-label">関西</td></tr>
+      <tr class="header-row"><th>施設名</th><th>運営法人</th><th>住所</th><th>TEL</th><th>FAX</th><th>開所日</th></tr>
+      <tr data-search="ラシクラボ大阪堺 YK 堺市 大阪 関西"><td><div class="name-main">ラシクラボ大阪堺</div></td><td class="corp">㈱YK</td><td class="addr">〒590-0076 大阪府堺市堺区北瓦町2-3-8 堺東北條第2ビル 7階A号室</td><td class="tel"><a href="tel:072-275-6198">072-275-6198</a></td><td class="tel">072-275-6198</td><td class="date">2023/8/1</td></tr>
+      <tr data-search="ラシクラボ和泉府中 YK 和泉市 大阪 関西"><td><div class="name-main">ラシクラボ和泉府中</div></td><td class="corp">㈱YK</td><td class="addr">〒594-0071 大阪府和泉市府中町7丁目5番52号 スカイラークABC4階</td><td class="tel"><a href="tel:072-599-8229">072-599-8229</a></td><td class="tel"><span class="note">-</span></td><td class="date">2025/2/1</td></tr>
+
+      <!-- 中国 -->
+      <tr class="region-row"><td colspan="6" class="region-label">中国</td></tr>
+      <tr class="header-row"><th>施設名</th><th>運営法人</th><th>住所</th><th>TEL</th><th>FAX</th><th>開所日</th></tr>
+      <tr data-search="ラシクラボ広島 ULT 広島市 中国"><td><div class="name-main">ラシクラボ広島</div></td><td class="corp">㈱ULT</td><td class="addr">〒730-0011 広島県広島市中区基町11-13 合人社広島紙屋町アネクス6階</td><td class="tel"><a href="tel:082-962-1692">082-962-1692</a></td><td class="tel">082-962-1693</td><td class="date">2025/3/1</td></tr>
+      <tr data-search="ラシクラボコネクト広島祇園 ULT 広島市 中国"><td><div class="name-main">ラシクラボコネクト広島祇園</div></td><td class="corp">㈱ULT</td><td class="addr">〒731-0138 広島市安佐南区祗園1丁目16番20号 コープ野村祗園 1階</td><td class="tel"><a href="tel:082-555-9706">082-555-9706</a></td><td class="tel">082-555-9707</td><td class="date">2025/2/1</td></tr>
+      <tr data-search="ラシクラボアカデミー峰高 mo-mo 廿日市市 広島 中国"><td><div class="name-main">ラシクラボアカデミー峰高</div></td><td class="corp">㈱mo-mo</td><td class="addr">〒738-0034 広島県廿日市市宮内73-70</td><td class="tel" colspan="2"><span class="note">問い合わせは担当者にお願いします</span></td><td class="date">-</td></tr>
+
+      <!-- 四国 -->
+      <tr class="region-row"><td colspan="6" class="region-label">四国</td></tr>
+      <tr class="header-row"><th>施設名</th><th>運営法人</th><th>住所</th><th>TEL</th><th>FAX</th><th>開所日</th></tr>
+      <tr data-search="ラシクラボ松山 マッシン 松山市 愛媛 四国"><td><div class="name-main">ラシクラボ松山</div></td><td class="corp">㈱マッシン</td><td class="addr">〒790-0011 愛媛県松山市千舟町4丁目6-8 岡田ビル2階</td><td class="tel"><a href="tel:089-993-7994">089-993-7994</a></td><td class="tel">089-993-7995</td><td class="date">2023/11/1</td></tr>
+
+      <!-- 九州 -->
+      <tr class="region-row"><td colspan="6" class="region-label">九州</td></tr>
+      <tr class="header-row"><th>施設名</th><th>運営法人</th><th>住所</th><th>TEL</th><th>FAX</th><th>開所日</th></tr>
+      <tr data-search="ラシクラボ小倉 UNUS 北九州市 福岡 九州"><td><div class="name-main">ラシクラボ小倉</div></td><td class="corp">㈱UNUS</td><td class="addr">〒802-0003 福岡県北九州市小倉北区米町1丁目5-15 勝山大阪町ビル 6階</td><td class="tel"><a href="tel:093-967-8208">093-967-8208</a></td><td class="tel">093-967-8209</td><td class="date">2022/4/1</td></tr>
+      <tr data-search="ラシクラボ小倉鍛冶町 UNUS 北九州市 福岡 九州"><td><div class="name-main">ラシクラボ小倉鍛冶町</div></td><td class="corp">㈱UNUS</td><td class="addr">〒802-0004 福岡県北九州市小倉北区鍛冶町2丁目1-1 クルーズ勝山通ビル 2階D号室</td><td class="tel"><a href="tel:093-967-2475">093-967-2475</a></td><td class="tel">093-967-2476</td><td class="date">2024/10/1</td></tr>
+      <tr data-search="ラシクラボ天神 UNUS 福岡市 福岡 九州"><td><div class="name-main">ラシクラボ天神</div></td><td class="corp">㈱UNUS</td><td class="addr">〒810-0041 福岡県福岡市中央区大名1丁目12-49 バルビゾン102 402</td><td class="tel"><a href="tel:092-401-8757">092-401-8757</a></td><td class="tel">092-401-8758</td><td class="date">2025/8/1</td></tr>
+      <tr data-search="ラシクラボ博多 UNUS 福岡市 福岡 九州"><td><div class="name-main">ラシクラボ博多</div></td><td class="corp">㈱UNUS</td><td class="addr">〒812-0011 福岡県福岡市博多区博多駅前1-23-33</td><td class="tel"><a href="tel:092-600-0152">092-600-0152</a></td><td class="tel">092-600-0153</td><td class="date">2024/1/1</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========== 施設外 ========== -->
+  <div class="section">
+    <div class="section-badge orange">&#11088; 施設外</div>
+    <div class="tbl-wrap">
+      <table id="extTable">
+      <!-- 関東 -->
+      <tr class="region-row"><td colspan="6" class="region-label">関東</td></tr>
+      <tr class="header-row"><th>施設名</th><th>運営法人</th><th>住所</th><th>TEL</th><th>FAX</th><th>開所日</th></tr>
+      <tr data-search="アニメータードリームスクール大宮東口 Good Work Japan さいたま市 関東 施設外"><td><div class="name-main">アニメータードリームスクール大宮東口 <span class="tag ext">施設外</span></div></td><td class="corp">㈱Good Work Japan</td><td class="addr">〒330-0845 埼玉県さいたま市大宮区仲町2丁目85 AXIS-COAビル4階</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+      <tr data-search="アニメータードリームスクール大宮西口 Good Work Japan さいたま市 関東 施設外"><td><div class="name-main">アニメータードリームスクール大宮西口 <span class="tag ext">施設外</span></div></td><td class="corp">㈱Good Work Japan</td><td class="addr">〒330-0854 埼玉県さいたま市大宮区桜木町2丁目3-69 大原第一ビル5階</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+      <tr data-search="アニメータードリームスクール千葉中央 Good Work Japan 千葉市 関東 施設外"><td><div class="name-main">アニメータードリームスクール千葉中央 <span class="tag ext">施設外</span></div></td><td class="corp">㈱Good Work Japan</td><td class="addr">〒260-0021 千葉県千葉市中央区新宿2-5-16 LKパークビル4F</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+      <tr data-search="STUN TOKYO ラシクル 品川区 東京 関東 施設外"><td><div class="name-main">STUN TOKYO <span class="tag ext">施設外</span></div></td><td class="corp">㈱ラシクル</td><td class="addr">〒140-0011 東京都品川区東大井5丁目1-2 Shine Oimachi 1階A号室</td><td class="tel"><a href="tel:03-6456-5050">03-6456-5050</a></td><td class="tel"><span class="note">-</span></td><td class="date">2025/9/3</td></tr>
+      <tr data-search="ラシクルスタジオ大井町 ラシクル 品川区 東京 関東 施設外"><td><div class="name-main">ラシクルスタジオ大井町 <span class="tag ext">施設外</span></div></td><td class="corp">㈱ラシクル</td><td class="addr">〒140-0014 東京都品川区大井1丁目50番15号 桜井ビル 5階</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+      <tr data-search="ラシクルスタジオ横浜 ラシクル 横浜市 神奈川 関東 施設外"><td><div class="name-main">ラシクルスタジオ横浜 <span class="tag ext">施設外</span></div></td><td class="corp">㈱ラシクル</td><td class="addr">〒231-0041 神奈川県横浜市中区吉田町48 タクエー吉田町ビル6C</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+      <tr data-search="ラシクルスタジオ川崎 ラシクル 川崎市 神奈川 関東 施設外"><td><div class="name-main">ラシクルスタジオ川崎 <span class="tag ext">施設外</span></div></td><td class="corp">㈱ラシクル</td><td class="addr">〒210-0014 川崎市川崎区貝塚1-3-20 ラポール貝塚102号室</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+
+      <!-- 東海 -->
+      <tr class="region-row"><td colspan="6" class="region-label">東海</td></tr>
+      <tr class="header-row"><th>施設名</th><th>運営法人</th><th>住所</th><th>TEL</th><th>FAX</th><th>開所日</th></tr>
+      <tr data-search="ラシクルスタジオ浜松 ラシクル 浜松市 静岡 東海 施設外"><td><div class="name-main">ラシクルスタジオ浜松 <span class="tag ext">施設外</span></div></td><td class="corp">㈱ラシクル</td><td class="addr">〒430-0928 静岡県浜松市中央区板屋町100-15 藤原ビル702・801・802</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+      <tr data-search="ねことワーク ラシクル 浜松市 静岡 東海 施設外"><td><div class="name-main">(仮名)ねことワーク <span class="tag ext">施設外</span></div></td><td class="corp">㈱ラシクル</td><td class="addr">〒430-0944 静岡県浜松市中央区田町327-24 万年橋パークビル801</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+      <tr data-search="ラシクルスタジオ名古屋 ラシクル 名古屋市 愛知 東海 施設外"><td><div class="name-main">ラシクルスタジオ名古屋 <span class="tag ext">施設外</span></div></td><td class="corp">㈱ラシクル</td><td class="addr">〒460-0008 愛知県名古屋市中区栄3丁目32番24号 コジマテントビル2階西号室</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+      <tr data-search="ラシクルカフェwithWacom ラシクル 名古屋市 愛知 東海 施設外"><td><div class="name-main">ラシクルカフェwithWacom <span class="tag ext">施設外</span></div></td><td class="corp">㈱ラシクル</td><td class="addr">〒460-0008 愛知県名古屋市中区栄3丁目32番24号 コジマテントビル1階</td><td class="tel"><a href="tel:052-746-9420">052-746-9420</a></td><td class="tel"><span class="note">-</span></td><td class="date">2025/12/1</td></tr>
+
+      <!-- 九州 -->
+      <tr class="region-row"><td colspan="6" class="region-label">九州</td></tr>
+      <tr class="header-row"><th>施設名</th><th>運営法人</th><th>住所</th><th>TEL</th><th>FAX</th><th>開所日</th></tr>
+      <tr data-search="ラシクルスタジオ小倉 ラシクル 北九州市 福岡 九州 施設外"><td><div class="name-main">ラシクルスタジオ小倉 <span class="tag ext">施設外</span></div></td><td class="corp">㈱ラシクル</td><td class="addr">〒802-0004 福岡県北九州市小倉北区鍛冶町2丁目1-1 クルーズ勝山通ビル 8階B号室</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+      <tr data-search="ラシクルスタジオ博多 ラシクル 福岡市 福岡 九州 施設外"><td><div class="name-main">ラシクルスタジオ博多 <span class="tag ext">施設外</span></div></td><td class="corp">㈱ラシクル</td><td class="addr">〒812-0011 福岡市博多区博多駅前1丁目11番14号 博多プレイスワン6階</td><td class="tel"><span class="note">-</span></td><td class="tel"><span class="note">-</span></td><td class="date">-</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function filterRows() {
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  var tables = document.querySelectorAll('table');
+  tables.forEach(function(tbl) {
+    var dataRows = tbl.querySelectorAll('tr[data-search]');
+    var regionRows = tbl.querySelectorAll('.region-row');
+    var headerRows = tbl.querySelectorAll('.header-row');
+    // Track which regions have visible rows
+    var regionVisible = {};
+    var currentRegion = null;
+    tbl.querySelectorAll('tr').forEach(function(tr) {
+      if (tr.classList.contains('region-row')) {
+        currentRegion = tr.querySelector('td').textContent.trim();
+        regionVisible[currentRegion] = false;
+      }
+      if (tr.hasAttribute('data-search')) {
+        var s = (tr.getAttribute('data-search') + ' ' + tr.textContent).toLowerCase();
+        var match = !q || s.indexOf(q) !== -1;
+        tr.style.display = match ? '' : 'none';
+        if (match && currentRegion) regionVisible[currentRegion] = true;
+      }
+    });
+    // Show/hide region headers
+    currentRegion = null;
+    var nextIsHeader = false;
+    tbl.querySelectorAll('tr').forEach(function(tr) {
+      if (tr.classList.contains('region-row')) {
+        currentRegion = tr.querySelector('td').textContent.trim();
+        tr.style.display = regionVisible[currentRegion] ? '' : 'none';
+        nextIsHeader = true;
+      } else if (tr.classList.contains('header-row') && nextIsHeader) {
+        tr.style.display = regionVisible[currentRegion] ? '' : 'none';
+        nextIsHeader = false;
+      }
+    });
+  });
+}
+</script>
+</body>
+</html>
