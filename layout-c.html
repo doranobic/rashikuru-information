@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ラシクルinformation - Layout C</title>
+<style>
+  :root {
+    --primary: #7CB342;
+    --primary-dark: #558B2F;
+    --primary-light: #C5E1A5;
+    --primary-pale: #F1F8E9;
+    --accent: #FF8F00;
+    --accent-light: #FFF3E0;
+    --text: #333;
+    --text-light: #666;
+    --bg: #FAFAFA;
+    --white: #fff;
+    --border: #E0E0E0;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI','Hiragino Kaku Gothic ProN','Noto Sans JP','Meiryo',sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* ===== HEADER / HERO ===== */
+  .hero-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, #33691E 100%);
+    color: var(--white);
+    text-align: center;
+    padding: 48px 20px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-header::before {
+    content: '';
+    position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.03) 40px, rgba(255,255,255,0.03) 80px);
+    pointer-events: none;
+  }
+  .hero-header h1 {
+    font-size: 40px; font-weight: 900; letter-spacing: 5px;
+    position: relative; text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .hero-sub {
+    font-size: 14px; opacity: 0.85; margin-top: 6px; position: relative;
+  }
+  .hero-search {
+    max-width: 500px; margin: 20px auto 0; position: relative;
+  }
+  .hero-search input {
+    width: 100%; padding: 12px 16px 12px 42px;
+    border: none; border-radius: 30px;
+    font-size: 14px; outline: none;
+    background: rgba(255,255,255,0.95);
+    color: var(--text);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .hero-search input::placeholder { color: #999; }
+  .hero-search .search-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 16px; color: #999; pointer-events: none;
+  }
+  .hero-search .search-clear {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; font-size: 18px; color: #999;
+    cursor: pointer; display: none; padding: 2px 4px;
+  }
+  .hero-search .search-clear:hover { color: var(--text); }
+  .search-results {
+    display: none; margin-top: 8px; max-height: 350px; overflow-y: auto;
+    border: 1px solid var(--border); border-radius: 12px; background: var(--white);
+    box-shadow: var(--shadow-lg); text-align: left;
+  }
+  .search-results::-webkit-scrollbar { width: 5px; }
+  .search-results::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
+  .sr-count { font-size: 11px; color: var(--text-light); padding: 8px 14px; border-bottom: 1px solid #f0f0f0; }
+  .sr-item {
+    display: block; padding: 10px 14px; border-bottom: 1px solid #f5f5f5;
+    text-decoration: none; color: var(--text); font-size: 12px; transition: background .15s;
+  }
+  .sr-item:last-child { border-bottom: none; }
+  .sr-item:hover { background: var(--primary-pale); }
+  .sr-cat {
+    display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px;
+    margin-right: 6px; font-weight: 600;
+  }
+  .sr-cat.cat-info { background: #E3F2FD; color: #1565C0; }
+  .sr-cat.cat-link { background: #E8F5E9; color: #2E7D32; }
+  .sr-cat.cat-faq { background: #FFF3E0; color: #E65100; }
+  .sr-cat.cat-hub { background: #F3E5F5; color: #7B1FA2; }
+  .sr-cat.cat-news { background: #FFEBEE; color: #C62828; }
+  .sr-title { font-weight: 600; }
+  .sr-title mark { background: #FFEE58; color: var(--text); border-radius: 2px; padding: 0 1px; }
+  .sr-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+  .sr-empty { padding: 20px; text-align: center; color: var(--text-light); font-size: 13px; }
+
+  /* ===== TAB BAR ===== */
+  .tab-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-bar-inner {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-width: max-content;
+  }
+  .tab-btn {
+    padding: 14px 22px;
+    font-size: 14px; font-weight: 600;
+    color: var(--text-light);
+    background: none; border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    transition: color 0.2s;
+  }
+  .tab-btn:hover { color: var(--primary-dark); }
+  .tab-btn.active {
+    color: var(--primary-dark);
+  }
+  .tab-btn.active::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px 3px 0 0;
+  }
+
+  /* ===== TAB CONTENT ===== */
+  .tab-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+  }
+  .tab-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 16px; font-weight: 700;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+    color: var(--primary-dark);
+  }
+  .icon {
+    width: 26px; height: 26px; border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--white); flex-shrink: 0;
+  }
+  .icon.green { background: var(--primary); }
+  .icon.orange { background: var(--accent); }
+  .icon.blue { background: #1976D2; }
+
+  /* ===== HOME TAB - STAT CARDS ===== */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    text-align: center;
+    border-top: 4px solid var(--primary);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .stat-card:nth-child(2) { border-top-color: #1976D2; }
+  .stat-card:nth-child(3) { border-top-color: var(--accent); }
+  .stat-card:nth-child(4) { border-top-color: #7B1FA2; }
+  .stat-card .stat-num { font-size: 28px; font-weight: 900; color: var(--primary-dark); }
+  .stat-card:nth-child(2) .stat-num { color: #1976D2; }
+  .stat-card:nth-child(3) .stat-num { color: var(--accent); }
+  .stat-card:nth-child(4) .stat-num { color: #7B1FA2; }
+  .stat-card .stat-label { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+
+  .home-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* ===== QUICK HUB ===== */
+  .hub-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .hub-btn {
+    display: flex; align-items: center; justify-content: center;
+    padding: 14px 8px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; background: var(--white);
+    transition: all 0.2s;
+    text-decoration: none; color: var(--text);
+    text-align: center;
+  }
+  .hub-btn:hover {
+    border-color: var(--primary); background: var(--primary-pale);
+    color: var(--primary-dark); transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124,179,66,0.2);
+  }
+
+  /* ===== NEWS/NOTICES ===== */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .feed { list-style: none; }
+  .feed-item {
+    padding: 12px 0; border-bottom: 1px solid #f0f0f0;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
+  }
+  .feed-item:last-child { border-bottom: none; }
+  .fi-c { flex: 1; }
+  .cat {
+    display: inline-block; font-size: 10px; padding: 2px 7px;
+    border-radius: 4px; margin-bottom: 3px;
+  }
+  .cat.hr { background: #E8F5E9; color: #2E7D32; }
+  .cat.rule { background: #FFF3E0; color: #E65100; }
+  .cat.event { background: #E3F2FD; color: #1565C0; }
+  .cat.info { background: #F3E5F5; color: #7B1FA2; }
+  .fi-t { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .badge {
+    font-size: 10px; padding: 1px 7px; border-radius: 10px;
+    font-weight: 600; margin-left: 5px;
+  }
+  .badge.new { background: #FFCDD2; color: #C62828; }
+  .fi-d { font-size: 11px; color: var(--text-light); }
+  .det {
+    padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--white); font-size: 11px; cursor: pointer; white-space: nowrap;
+    transition: all 0.2s; color: var(--text); text-decoration: none;
+  }
+  .det:hover { border-color: var(--primary); color: var(--primary-dark); background: var(--primary-pale); }
+  .feed-loading { font-size: 12px; color: var(--text-light); padding: 16px; text-align: center; }
+  .scroll-card { max-height: 500px; overflow-y: auto; }
+  .scroll-card::-webkit-scrollbar { width: 5px; }
+  .scroll-card::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
+
+  /* ===== DOCUMENTS (Tab 3) ===== */
+  .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .doc-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 20px;
+    border-left: 4px solid var(--primary);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .doc-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .doc-card:nth-child(2) { border-left-color: #1976D2; }
+  .doc-card:nth-child(3) { border-left-color: var(--accent); }
+  .doc-card:nth-child(4) { border-left-color: #7B1FA2; }
+  .doc-card h3 {
+    font-size: 15px; font-weight: 700; margin-bottom: 10px;
+    color: var(--primary-dark);
+  }
+  .doc-card:nth-child(2) h3 { color: #1976D2; }
+  .doc-card:nth-child(3) h3 { color: var(--accent); }
+  .doc-card:nth-child(4) h3 { color: #7B1FA2; }
+  .doc-link {
+    display: block; padding: 8px 12px;
+    font-size: 13px; color: var(--text);
+    text-decoration: none; border-radius: 6px;
+    transition: background 0.15s;
+    margin-bottom: 2px;
+  }
+  .doc-link:hover { background: var(--primary-pale); color: var(--primary-dark); }
+  .doc-link::before { content: '\25B8 '; color: var(--primary); }
+  .drive-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 16px; padding: 10px 20px;
+    background: var(--primary); color: var(--white);
+    border-radius: 8px; text-decoration: none;
+    font-size: 13px; font-weight: 600;
+    transition: background 0.2s;
+  }
+  .drive-link:hover { background: var(--primary-dark); }
+
+  /* ===== CATEGORY (Tab 4) ===== */
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .cat-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .cat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .cat-card h3 {
+    font-size: 15px; font-weight: 700; margin-bottom: 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--primary-light);
+    color: var(--primary-dark);
+  }
+  .cat-link {
+    display: block; padding: 7px 10px;
+    font-size: 12px; color: var(--text);
+    text-decoration: none; border-radius: 6px;
+    transition: background 0.15s;
+    margin-bottom: 2px;
+  }
+  .cat-link:hover { background: var(--primary-pale); color: var(--primary-dark); }
+  .cat-link::before { content: '\25B8 '; color: var(--primary); }
+
+  /* ===== MY PAGE (Tab 5) ===== */
+  .mypage-info {
+    font-size: 14px; color: var(--text-light);
+    margin-bottom: 20px; padding: 12px 16px;
+    background: var(--primary-pale); border-radius: 8px;
+  }
+  .mypage-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .mypage-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 28px 16px;
+    background: var(--white); border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 15px; font-weight: 700;
+    color: var(--text); text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .mypage-btn:hover {
+    border-color: var(--primary); background: var(--primary-pale);
+    color: var(--primary-dark); transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(124,179,66,0.2);
+  }
+  .mypage-btn .btn-icon {
+    font-size: 28px; margin-bottom: 8px;
+  }
+
+  /* ===== LINKS (Tab 6) ===== */
+  .links-section {
+    margin-bottom: 24px;
+  }
+  .links-section-title {
+    font-size: 16px; font-weight: 700;
+    color: var(--white); background: var(--primary-dark);
+    padding: 10px 16px; border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+  }
+  .links-section-body {
+    background: var(--white); border-radius: 0 0 8px 8px;
+    box-shadow: var(--shadow);
+    padding: 4px 0;
+  }
+  .link-group {
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .link-group:last-child { border-bottom: none; }
+  .link-group-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    cursor: pointer; font-weight: 600; font-size: 13px;
+    color: var(--text); transition: background 0.15s;
+  }
+  .link-group-header:hover { background: var(--primary-pale); }
+  .link-group-header .arr { transition: transform 0.3s; font-size: 11px; }
+  .link-group-body {
+    max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+    padding: 0 16px;
+  }
+  .link-group-body.open { max-height: 5000px; padding-bottom: 8px; }
+  .sns-row { padding: 6px 10px; border-bottom: 1px solid #f5f5f5; }
+  .sns-row:last-child { border-bottom: none; }
+  .sns-name { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+  .sns-links { display: flex; gap: 4px; flex-wrap: wrap; }
+  .sns-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 10px; text-decoration: none; font-weight: 600; transition: opacity 0.2s;
+  }
+  .sns-badge:hover { opacity: 0.8; }
+  .sns-badge.ig { background: #E1306C; color: #fff; }
+  .sns-badge.x { background: #000; color: #fff; }
+  .sns-badge.yt { background: #FF0000; color: #fff; }
+  .sns-badge.tt { background: #010101; color: #fff; }
+  .sns-badge.web { background: var(--primary); color: #fff; }
+  .sns-badge.shop { background: #FF8F00; color: #fff; }
+  .lg-i {
+    display: block; padding: 7px 14px; font-size: 12px; color: var(--text);
+    text-decoration: none; border-radius: 6px; transition: background 0.15s;
+  }
+  .lg-i:hover { background: var(--primary-pale); color: var(--primary-dark); }
+
+  /* ===== FAQ (Tab 8) ===== */
+  .faq-item { border-bottom: 1px solid var(--border); }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 0; cursor: pointer; font-weight: 600; font-size: 14px;
+    border: none; background: none; width: 100%; text-align: left;
+    color: var(--text); transition: color 0.2s;
+  }
+  .faq-q:hover { color: var(--primary-dark); }
+  .faq-q .q-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--primary); color: var(--white);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+  .faq-q .arr { margin-left: auto; transition: transform 0.3s; font-size: 12px; flex-shrink: 0; }
+  .faq-a {
+    max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+    font-size: 13px; color: var(--text-light);
+  }
+  .faq-a.open { max-height: 300px; }
+  .faq-a-inner { padding: 0 14px 16px 42px; line-height: 1.8; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 960px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .home-grid { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .doc-grid { grid-template-columns: 1fr; }
+    .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .hero-header h1 { font-size: 26px; letter-spacing: 2px; }
+    .hero-header { padding: 32px 16px 28px; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .mypage-grid { grid-template-columns: 1fr 1fr; }
+    .hub-grid { grid-template-columns: 1fr 1fr; }
+    .tab-btn { padding: 12px 14px; font-size: 13px; }
+    .tab-content { padding: 16px 12px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO HEADER ===== -->
+<header class="hero-header">
+  <h1>ラシクルinformation</h1>
+  <div class="hero-sub">Employee Portal</div>
+  <div class="hero-search">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="portalSearch" placeholder="ポータル内を検索..." oninput="portalSearchHandler()" autocomplete="off">
+    <button class="search-clear" id="searchClear" onclick="clearSearch()">&#10005;</button>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</header>
+
+<!-- ===== TAB BAR ===== -->
+<nav class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-btn active" data-tab="home" onclick="switchTab('home')">ホーム</button>
+    <button class="tab-btn" data-tab="news" onclick="switchTab('news')">通達・ニュース</button>
+    <button class="tab-btn" data-tab="docs" onclick="switchTab('docs')">規程・文書</button>
+    <button class="tab-btn" data-tab="category" onclick="switchTab('category')">カテゴリ</button>
+    <button class="tab-btn" data-tab="mypage" onclick="switchTab('mypage')">マイページ</button>
+    <button class="tab-btn" data-tab="links" onclick="switchTab('links')">リンク集</button>
+    <button class="tab-btn" data-tab="calendar" onclick="switchTab('calendar')">カレンダー</button>
+    <button class="tab-btn" data-tab="faq" onclick="switchTab('faq')">FAQ</button>
+  </div>
+</nav>
+
+<!-- ===== TAB CONTENT ===== -->
+<div class="tab-content">
+
+  <!-- ==================== TAB 1: HOME ==================== -->
+  <div id="tab-home" class="tab-panel active">
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="noticeCount">--</div>
+        <div class="stat-label">社内通達</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="newsCount">--</div>
+        <div class="stat-label">ニュース</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">&#128197;</div>
+        <div class="stat-label">今日の予定</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">&#9889;</div>
+        <div class="stat-label">クイックアクセス</div>
+      </div>
+    </div>
+
+    <div class="home-grid">
+      <!-- Latest 3 notices -->
+      <div class="card">
+        <div class="card-title"><span class="icon orange">&#128227;</span>最新通達</div>
+        <div id="homeNoticeLoading" class="feed-loading">読み込み中...</div>
+        <ul class="feed" id="homeNoticeList"></ul>
+      </div>
+
+      <!-- Quick Hub Buttons -->
+      <div class="card">
+        <div class="card-title"><span class="icon blue">&#128100;</span>クイックハブ</div>
+        <div class="hub-grid">
+          <a href="https://doranobic.github.io/rashikuru-information/contact.html" target="_blank" class="hub-btn">相談・連絡</a>
+          <a href="#" class="hub-btn">申請・届出</a>
+          <a href="#" class="hub-btn">実績報告</a>
+          <a href="#" class="hub-btn">月次</a>
+          <a href="#" class="hub-btn">備品管理</a>
+          <a href="#" class="hub-btn">小口管理</a>
+        </div>
+      </div>
+
+      <!-- Mini Calendar -->
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-title"><span class="icon green">&#128197;</span>カレンダー</div>
+        <iframe src="https://calendar.google.com/calendar/embed?src=rashikulab.creative%40gmail.com&ctz=Asia%2FTokyo" style="border:0;width:100%;height:350px;border-radius:8px;" frameborder="0" scrolling="no"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 2: NEWS ==================== -->
+  <div id="tab-news" class="tab-panel">
+    <div class="two-col">
+      <div class="card scroll-card">
+        <div class="card-title"><span class="icon orange">&#128227;</span>社内通達</div>
+        <div id="noticeLoading" class="feed-loading">読み込み中...</div>
+        <ul class="feed" id="noticeList"></ul>
+      </div>
+      <div class="card scroll-card">
+        <div class="card-title"><span class="icon green">&#128240;</span>社内ニュース</div>
+        <div id="newsLoading" class="feed-loading">読み込み中...</div>
+        <ul class="feed" id="newsList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 3: DOCS ==================== -->
+  <div id="tab-docs" class="tab-panel">
+    <h2 style="font-size:18px;font-weight:700;color:var(--primary-dark);margin-bottom:20px;">社内管理部門からの情報</h2>
+    <div class="doc-grid">
+      <div class="doc-card">
+        <h3>就業・人事</h3>
+        <a href="https://docs.google.com/document/d/1UttAXKGIQcXMbg4l1BG1m8XLyEwR2P13Pzihr4CsU2o/edit?usp=sharing" target="_blank" class="doc-link">就業規則</a>
+        <a href="https://docs.google.com/document/d/1VBi768u1EisgIGVwkp1vVDoH5doTYowjbmGnkNQ38Es/edit?usp=sharing" target="_blank" class="doc-link">服務規律</a>
+        <a href="https://docs.google.com/document/d/1Lpvm1_0EVtBznKzEKOQ1r4-b4yeIkU0IkqJMmxCS3KI/edit?usp=sharing" target="_blank" class="doc-link">ハラスメント防止</a>
+      </div>
+      <div class="doc-card">
+        <h3>情報セキュリティ・個人情報</h3>
+        <a href="https://docs.google.com/document/d/1ibJYs-qKGvJksvEE8RCBrSN3Ka98knlp8idAdTVEr7M/edit?usp=sharing" target="_blank" class="doc-link">情報・セキュリティ規程</a>
+        <a href="https://docs.google.com/document/d/1r97_0PcqdOoYSVbSrg4F32_eLEez7nOPtr2DTSCOZFc/edit?usp=sharing" target="_blank" class="doc-link">個人情報保護規定</a>
+      </div>
+      <div class="doc-card">
+        <h3>業務・利用者対応</h3>
+        <a href="https://docs.google.com/document/d/1VOjcO-_69H-Jw4X66i8uxft1-EQmgv4wXYkznzljhCc/edit?usp=sharing" target="_blank" class="doc-link">利用者様対応ガイドライン</a>
+      </div>
+      <div class="doc-card">
+        <h3>制作・広報コンプライアンス</h3>
+        <a href="https://docs.google.com/document/d/1Xu53ngRkOGyiP2Y_gf0n_xTag8FdwyDH0Oi2tUUyh6k/edit?usp=sharing" target="_blank" class="doc-link">著作権・権利・制作プロセス遵守規程</a>
+        <a href="https://docs.google.com/document/d/1xcuylZBnwStxl68kIkU3hwtNmIdc4Y5KZhnJMnZKpQU/edit?usp=sharing" target="_blank" class="doc-link">SNS・広報コンプライアンス</a>
+      </div>
+    </div>
+    <a href="https://drive.google.com/drive/folders/1hjx6p7FDXk4zEohA0Vo7g955IgMku8UI?usp=sharing" target="_blank" class="drive-link">&#128193; Google Drive フォルダ一覧を開く</a>
+  </div>
+
+  <!-- ==================== TAB 4: CATEGORY ==================== -->
+  <div id="tab-category" class="tab-panel">
+    <h2 style="font-size:18px;font-weight:700;color:var(--primary-dark);margin-bottom:20px;">各種情報カテゴリ集</h2>
+    <div class="cat-grid">
+      <div class="cat-card">
+        <h3>&#128203; 運営マニュアル</h3>
+        <a href="#" class="cat-link">日次実績の流れ</a>
+        <a href="#" class="cat-link">施設外就労の報告</a>
+      </div>
+      <div class="cat-card">
+        <h3>&#128193; SNS運用</h3>
+        <a href="#" class="cat-link">Instagram運用ガイド</a>
+        <a href="#" class="cat-link">X運用ガイド</a>
+        <a href="#" class="cat-link">TikTok運用ガイド</a>
+        <a href="#" class="cat-link">投稿テンプレート集</a>
+        <a href="#" class="cat-link">ハッシュタグ一覧</a>
+      </div>
+      <div class="cat-card">
+        <h3>&#127909; 動画制作</h3>
+        <a href="#" class="cat-link">YouTube運用マニュアル</a>
+        <a href="#" class="cat-link">切り抜き動画制作フロー</a>
+        <a href="#" class="cat-link">サムネイル作成ガイド</a>
+        <a href="#" class="cat-link">動画編集ツール一覧</a>
+      </div>
+      <div class="cat-card">
+        <h3>&#127912; デザイン・ブランド</h3>
+        <a href="#" class="cat-link">デザインガイドライン</a>
+        <a href="#" class="cat-link">ブランド素材集</a>
+        <a href="#" class="cat-link">フォント・カラー規定</a>
+        <a href="#" class="cat-link">名刺・印刷物テンプレート</a>
+      </div>
+      <div class="cat-card">
+        <h3>&#127925; 音楽・EC</h3>
+        <a href="#" class="cat-link">音楽配信の手順</a>
+        <a href="#" class="cat-link">BOOTH出品マニュアル</a>
+        <a href="#" class="cat-link">minne出品マニュアル</a>
+        <a href="#" class="cat-link">売上・利益管理シート</a>
+      </div>
+      <div class="cat-card">
+        <h3>&#127970; 事業所運営</h3>
+        <a href="#" class="cat-link">新拠点立ち上げチェックリスト</a>
+        <a href="#" class="cat-link">拠点SNSアカウント開設手順</a>
+        <a href="#" class="cat-link">月次レポートテンプレート</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 5: MY PAGE ==================== -->
+  <div id="tab-mypage" class="tab-panel">
+    <h2 style="font-size:18px;font-weight:700;color:var(--primary-dark);margin-bottom:20px;">マイページ・拠点ハブ</h2>
+    <div class="mypage-info">拠点：さいたま新都心 ／ 権限：staff</div>
+    <div class="mypage-grid">
+      <a href="https://doranobic.github.io/rashikuru-information/contact.html" target="_blank" class="mypage-btn">
+        <span class="btn-icon">&#128172;</span>
+        相談・連絡
+      </a>
+      <a href="#" class="mypage-btn">
+        <span class="btn-icon">&#128203;</span>
+        申請・届出
+      </a>
+      <a href="#" class="mypage-btn">
+        <span class="btn-icon">&#128200;</span>
+        実績報告
+      </a>
+      <a href="#" class="mypage-btn">
+        <span class="btn-icon">&#128197;</span>
+        月次
+      </a>
+      <a href="#" class="mypage-btn">
+        <span class="btn-icon">&#128230;</span>
+        備品管理
+      </a>
+      <a href="#" class="mypage-btn">
+        <span class="btn-icon">&#128176;</span>
+        小口管理
+      </a>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 6: LINKS ==================== -->
+  <div id="tab-links" class="tab-panel">
+    <h2 style="font-size:18px;font-weight:700;color:var(--primary-dark);margin-bottom:20px;">各種リンク集</h2>
+
+    <!-- SNS -->
+    <div class="links-section">
+      <div class="links-section-title">SNS</div>
+      <div class="links-section-body">
+
+        <!-- 本部 -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> 本部</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-links">
+              <a href="https://rashikulab.jp/" target="_blank" class="sns-badge web">HP</a>
+              <a href="https://www.instagram.com/rashikulab/" target="_blank" class="sns-badge ig">IG</a>
+              <a href="https://x.com/rashikulab" target="_blank" class="sns-badge x">X</a>
+            </div></div>
+          </div>
+        </div>
+
+        <!-- 関東 -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> 関東エリア</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-name">千葉中央</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_chibachuo/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_cbc" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">千葉中央東口</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_chibachuo_east/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_cbce" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">大井町</div><div class="sns-links"><a href="https://www.instagram.com/rashikulaboimachi/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_oi" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">川崎</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_kawasaki/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_kawa" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">本厚木</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_hnat/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/Rashikulab_HNAT" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">浦和</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_urw/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_urw" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">さいたま新都心</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_ss/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_ss" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">大宮西口</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab.o.n/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_on" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">横浜</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_ykhm/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_ykhm" target="_blank" class="sns-badge x">X</a></div></div>
+          </div>
+        </div>
+
+        <!-- 東海 -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> 東海エリア</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-name">名古屋</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_ngy/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_ngy" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">浜松</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_hmmt/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_hmmt" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">浜松田町</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_tamachi/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashiku_tamachi" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">にゃんこらぼ（浜松）</div><div class="sns-links"><a href="https://rashikulab.jp/nyankolab/" target="_blank" class="sns-badge web">HP</a><a href="https://www.instagram.com/nyankolab_0601/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/nyankolab_hmmt" target="_blank" class="sns-badge x">X</a><a href="https://www.youtube.com/@にゃんこらぼ浜松" target="_blank" class="sns-badge yt">YT</a></div></div>
+          </div>
+        </div>
+
+        <!-- 関西 -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> 関西エリア</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-name">大阪堺</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_sakai/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulabsakai" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">和泉府中</div><div class="sns-links"><a href="https://www.instagram.com/rashiku_izm/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashiku_izm" target="_blank" class="sns-badge x">X</a></div></div>
+          </div>
+        </div>
+
+        <!-- 中国・四国 -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> 中国・四国</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-name">広島</div><div class="sns-links"><a href="https://www.instagram.com/rashikulabhiroshima/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_h" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">松山</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_mtym/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_mtym" target="_blank" class="sns-badge x">X</a></div></div>
+          </div>
+        </div>
+
+        <!-- 九州 -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> 九州エリア</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-name">小倉</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_kokr/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_kokr" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">小倉鍛冶町</div><div class="sns-links"><a href="https://www.instagram.com/k_kajimachi/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/k_kajimachi" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">博多</div><div class="sns-links"><a href="https://www.instagram.com/rashikulab_hakata/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashikulab_hkt" target="_blank" class="sns-badge x">X</a></div></div>
+            <div class="sns-row"><div class="sns-name">天神</div><div class="sns-links"><a href="https://www.instagram.com/rashiku_tenjin/" target="_blank" class="sns-badge ig">IG</a><a href="https://x.com/rashiku_tenjin" target="_blank" class="sns-badge x">X</a></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- コンテンツ -->
+    <div class="links-section">
+      <div class="links-section-title">コンテンツ</div>
+      <div class="links-section-body">
+
+        <!-- YouTube -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> YouTube</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-name">ともは赤髪</div><div class="sns-links"><a href="https://www.youtube.com/@tomohaakagami" target="_blank" class="sns-badge yt">YT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ブラーボりょう切り抜き</div><div class="sns-links"><a href="https://youtube.com/@rashikuru_ryoch" target="_blank" class="sns-badge yt">YT</a></div></div>
+            <div class="sns-row"><div class="sns-name">TOBE切り抜き</div><div class="sns-links"><a href="https://www.youtube.com/@tobe-rashikuru" target="_blank" class="sns-badge yt">YT</a></div></div>
+            <div class="sns-row"><div class="sns-name">にゃんこらぼ浜松</div><div class="sns-links"><a href="https://www.youtube.com/@にゃんこらぼ浜松" target="_blank" class="sns-badge yt">YT</a></div></div>
+            <div class="sns-row"><div class="sns-name">Flow-Lab</div><div class="sns-links"><a href="https://www.youtube.com/@Flow-Lab1" target="_blank" class="sns-badge yt">YT</a></div></div>
+          </div>
+        </div>
+
+        <!-- 輪和ヮの日常 -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> 輪和ヮの日常</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-links">
+              <a href="https://www.youtube.com/channel/UCgpgPbK9DjvQOrIcuy2eNfA" target="_blank" class="sns-badge yt">YT</a>
+              <a href="https://x.com/izakaya_wawawa" target="_blank" class="sns-badge x">X</a>
+              <a href="https://www.tiktok.com/@wawawa.nichijo" target="_blank" class="sns-badge tt">TT</a>
+            </div></div>
+          </div>
+        </div>
+
+        <!-- BUMP切り抜き -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> BUMP切り抜き</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-name">名場面アーカイブス</div><div class="sns-links"><a href="https://www.youtube.com/@%E5%90%8D%E5%A0%B4%E9%9D%A2%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%82%B9" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/meibamenarchives/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user5123171493361" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマ中毒ch</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E4%B8%AD%E6%AF%92ch" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/doramachudokuch/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user76050565132176" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマのツボ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%81%AE%E3%83%84%E3%83%9C" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dramano_tubo/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user4849554113286" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマ名場面集</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E5%90%8D%E5%A0%B4%E9%9D%A2%E9%9B%86" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama_meibamen/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@drama_meibamen" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">1分感動factory</div><div class="sns-links"><a href="https://www.youtube.com/@1%E5%88%86%E6%84%9F%E5%8B%95factory" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/1min_impressed_factory/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@1min_impressed_factory" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">神回だけ切り抜き</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A5%9E%E5%9B%9E%E3%81%A0%E3%81%91%E5%88%87%E3%82%8A%E6%8A%9C%E3%81%8D" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/thebest_only_kirinuki/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@thebest_only_kirinuki" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">バズったドラマシーン</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%90%E3%82%BA%E3%81%A3%E3%81%9F%E3%83%89%E3%83%A9%E3%83%9E%E3%82%B7%E3%83%BC%E3%83%B3" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/buzz_drama_episode/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@buzz_drama_episode" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマベストカット</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%83%99%E3%82%B9%E3%83%88%E3%82%AB%E3%83%83%E3%83%88" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dorama.besutcut/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@doramabesutcut" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">秒でハマる物語</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A7%92%E3%81%A7%E3%83%8F%E3%83%9E%E3%82%8B%E7%89%A9%E8%AA%9E" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/seconds_hamaru_story/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@seconds_hamaru_story" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ショート劇場まとめ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E5%8A%87%E5%A0%B4%E3%81%BE%E3%81%A8%E3%82%81" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/shortgekijomatome/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@shortgekijomatome" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">Base Bits Drama</div><div class="sns-links"><a href="https://www.youtube.com/@BaseBitsDrama" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/basebitsdrama/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@base_bits_drama" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">BUZZDRA</div><div class="sns-links"><a href="https://www.youtube.com/@buzzdra_clips" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/buzzdra_clips/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@buzzdra__clips" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマ切り抜き製作所</div><div class="sns-links"><a href="https://www.youtube.com/@dramaeditlab" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama__editlab/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@drama_editlab" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマクリップ倉庫</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%82%AF%E3%83%AA%E3%83%83%E3%83%97%E5%80%89%E5%BA%AB" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dramaclip_souko/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dramaclip_souko" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">秒で感動シアター</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A7%92%E3%81%A7%E6%84%9F%E5%8B%95%E3%82%B7%E3%82%A2%E3%82%BF%E3%83%BC" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/emotionclip_theater/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@emotionclip_theater" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">エモいシーンまとめ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%A8%E3%83%A2%E3%81%84%E3%82%B7%E3%83%BC%E3%83%B3%E3%81%BE%E3%81%A8%E3%82%81" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/emoishinmatome/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@emoishinmatome" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマまとめ部屋</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A7%92%E3%81%A7%E6%84%9F%E5%8B%95%E3%82%B7%E3%82%A2%E3%82%BF%E3%83%BC" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/doramamatomebeya/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@doramamatomebeya" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">1分で完結ドラマ</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%81%BE%E3%81%A8%E3%82%81%E9%83%A8%E5%B1%8B" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/1minidorama/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user272291784992" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマハイライト</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E.%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%88" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama_highlight_000/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user8025730109981" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ショートドラマ速報</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E9%80%9F%E5%A0%B1_BUMP" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/syotodoramasokuhou/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@syotodoramasokuhou" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">神ドラマアーカイブ</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%A5%9E%E3%83%89%E3%83%A9%E3%83%9E%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/got_drama_archive_002/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@user51170875980164" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">瞬間ドラマch</div><div class="sns-links"><a href="https://www.youtube.com/@%E7%9E%AC%E9%96%93%E3%83%89%E3%83%A9%E3%83%9Ech" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/syunkandoramach/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@syunkandoramach" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマクリップ劇場</div><div class="sns-links"><a href="https://www.youtube.com/channel/UCrlYaT5cSDDrPUG6_JehWFg" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dramacliptheater/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dramacliptheater" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">名作ドラマ切り抜き</div><div class="sns-links"><a href="https://www.youtube.com/channel/UCT9Bk6o50wGCOdSE_klfenQ" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/meisaku.dorama/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@meisaku.dorama" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマの核心</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E3%81%AE%E6%A0%B8%E5%BF%83" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/doramanokakushin/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@doramanokakushin" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマ見どころch</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E8%A6%8B%E3%81%A9%E3%81%93%E3%82%8Dch" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/dorama.midokoro/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dorama.midokoro" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ショートドラマ宝箱</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E5%AE%9D%E7%AE%B1" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/shotodoramatakarabako/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@shotodoramatakarabako" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">心に刺さる1分</div><div class="sns-links"><a href="https://www.youtube.com/@%E5%BF%83%E3%81%AB%E5%88%BA%E3%81%95%E3%82%8B1%E5%88%86" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/kokoronisasaru1pun/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@kokoronisasaru1pun" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマの時間</div><div class="sns-links"><a href="https://www.youtube.com/channel/UC02sSK42zShLoX4YjFbFJfQ" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama.is.time/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@dorama_is_time" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ドラマ切り抜き本舗</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%83%89%E3%83%A9%E3%83%9E%E5%88%87%E3%82%8A%E6%8A%9C%E3%81%8D%E6%9C%AC%E8%88%97" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/drama_kirinuki_honpo1028/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@drama_kirinuki_honpo" target="_blank" class="sns-badge tt">TT</a></div></div>
+            <div class="sns-row"><div class="sns-name">ショートドラマの沼</div><div class="sns-links"><a href="https://www.youtube.com/@%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E3%81%AE%E6%B2%BC" target="_blank" class="sns-badge yt">YT</a><a href="https://www.instagram.com/short_drama_numa/" target="_blank" class="sns-badge ig">IG</a><a href="https://www.tiktok.com/@short_drama_numa" target="_blank" class="sns-badge tt">TT</a></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 販売サイト -->
+    <div class="links-section">
+      <div class="links-section-title">販売サイト</div>
+      <div class="links-section-body">
+
+        <!-- 音楽・販売サイト -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> 音楽・販売サイト</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-name">ラシクラボMUSIC</div><div class="sns-links"><a href="https://music.rashikulab.jp/" target="_blank" class="sns-badge web">HP</a></div></div>
+            <div class="sns-row"><div class="sns-name">minne</div><div class="sns-links"><a href="https://minne.com/@rashikulab" target="_blank" class="sns-badge shop">minne</a></div></div>
+            <div class="sns-row"><div class="sns-name">BOOTH（ラシクラボ）</div><div class="sns-links"><a href="https://rashikulab.booth.pm/" target="_blank" class="sns-badge shop">BOOTH</a></div></div>
+            <div class="sns-row"><div class="sns-name">イラストAC</div><div class="sns-links"><a href="https://www.ac-illust.com/main/profile.php?id=24137464&area=1&page=1" target="_blank" class="sns-badge shop">DL</a></div></div>
+          </div>
+        </div>
+
+        <!-- ラシクル商店 -->
+        <div class="link-group">
+          <div class="link-group-header" onclick="toggleLinkGroup(this)"><span class="arr">&#9654;</span> ラシクル商店</div>
+          <div class="link-group-body">
+            <div class="sns-row"><div class="sns-links">
+              <a href="https://www.instagram.com/rashikuru_store/" target="_blank" class="sns-badge ig">IG</a>
+              <a href="https://x.com/rashikuru_store" target="_blank" class="sns-badge x">X</a>
+              <a href="https://rashikuru.booth.pm/items" target="_blank" class="sns-badge shop">BOOTH</a>
+            </div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ツール -->
+    <div class="links-section">
+      <div class="links-section-title">ツール</div>
+      <div class="links-section-body">
+        <a href="#" class="lg-i">Google Workspace</a>
+        <a href="#" class="lg-i">社内チャット</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== TAB 7: CALENDAR ==================== -->
+  <div id="tab-calendar" class="tab-panel">
+    <h2 style="font-size:18px;font-weight:700;color:var(--primary-dark);margin-bottom:20px;">カレンダー</h2>
+    <div class="card" style="padding:16px;">
+      <iframe src="https://calendar.google.com/calendar/embed?src=rashikulab.creative%40gmail.com&ctz=Asia%2FTokyo" style="border:0;width:100%;height:600px;border-radius:8px;" frameborder="0" scrolling="no"></iframe>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 8: FAQ ==================== -->
+  <div id="tab-faq" class="tab-panel">
+    <h2 style="font-size:18px;font-weight:700;color:var(--primary-dark);margin-bottom:20px;">よくある質問（FAQ）</h2>
+    <div class="card">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="q-icon">Q</span>有給休暇の申請方法は？<span class="arr">&#9654;</span></button>
+        <div class="faq-a"><div class="faq-a-inner">マイページ・拠点ハブの「申請・届出」から有給休暇申請フォームを開いてください。<br>申請は原則3営業日前までにお願いします。急な体調不良の場合は当日朝に上長へ連絡の上、事後申請も可能です。</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="q-icon">Q</span>経費精算の締め日はいつですか？<span class="arr">&#9654;</span></button>
+        <div class="faq-a"><div class="faq-a-inner">毎月25日が締め日です。25日までに申請された経費は翌月15日の給与と一緒に振り込まれます。<br>領収書の原本は経理部まで提出してください。</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="q-icon">Q</span>備品を購入したい場合はどうすればよいですか？<span class="arr">&#9654;</span></button>
+        <div class="faq-a"><div class="faq-a-inner">マイページ・拠点ハブの「備品管理」から購入申請フォームに記入してください。<br>5,000円未満：上長承認のみ<br>5,000円以上：上長承認＋総務部承認が必要です。</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="q-icon">Q</span>会議室の予約方法は？<span class="arr">&#9654;</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Googleカレンダーで会議室リソースを選択して予約できます。<br>利用後は原状復帰（椅子を戻す、ホワイトボードを消す）をお願いします。</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="q-icon">Q</span>パスワードを忘れた・ロックされた場合は？<span class="arr">&#9654;</span></button>
+        <div class="faq-a"><div class="faq-a-inner">ヘルプデスクへ連絡してください（内線: 999）。<br>本人確認の上、パスワードリセットを行います。リセット後は速やかに新しいパスワードを設定してください。</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="q-icon">Q</span>在宅勤務の申請はどうすればよいですか？<span class="arr">&#9654;</span></button>
+        <div class="faq-a"><div class="faq-a-inner">前日までにマイページ・拠点ハブの「申請・届出」から在宅勤務申請を提出してください。<br>在宅勤務中はタイムカードの打刻を忘れずにお願いします。</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="q-icon">Q</span>社内イベントの企画を出したいのですが？<span class="arr">&#9654;</span></button>
+        <div class="faq-a"><div class="faq-a-inner">社内掲示板の「イベント企画提案」フォームから提出できます。<br>予算が必要な場合は総務部との事前相談をお願いします。過去のイベント事例はマニュアルページで確認できます。</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span class="q-icon">Q</span>住所変更・氏名変更の届出は？<span class="arr">&#9654;</span></button>
+        <div class="faq-a"><div class="faq-a-inner">マイページ・拠点ハブの「申請・届出」から変更届を提出してください。<br>変更後10日以内に届出をお願いします。届出書類は人事・労務部門へ自動送信されます。</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-content -->
+
+<script>
+/* ===== TAB SWITCHING ===== */
+function switchTab(tabId) {
+  // Deactivate all tabs and panels
+  document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(panel) { panel.classList.remove('active'); });
+  // Activate selected
+  document.querySelector('[data-tab="' + tabId + '"]').classList.add('active');
+  document.getElementById('tab-' + tabId).classList.add('active');
+  // Scroll tab button into view
+  document.querySelector('[data-tab="' + tabId + '"]').scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  // Scroll to top of content
+  window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop, behavior: 'smooth' });
+}
+
+/* ===== LINK GROUP TOGGLE ===== */
+function toggleLinkGroup(el) {
+  var arr = el.querySelector('.arr');
+  var body = el.nextElementSibling;
+  body.classList.toggle('open');
+  arr.innerHTML = body.classList.contains('open') ? '&#9660;' : '&#9654;';
+}
+
+/* ===== FAQ TOGGLE ===== */
+function toggleFaq(el) {
+  var answer = el.nextElementSibling;
+  var arr = el.querySelector('.arr');
+  answer.classList.toggle('open');
+  if (arr) arr.innerHTML = answer.classList.contains('open') ? '&#9660;' : '&#9654;';
+}
+
+/* ==========================================
+   Blogger Integration
+   ========================================== */
+var BLOG_URL = 'https://rashikurutest.blogspot.com';
+
+var CAT_COLORS = {
+  '規程':'rule','人事':'hr','総務':'hr','イベント':'event','告知':'info',
+  '重要':'rule','お知らせ':'info','研修':'event'
+};
+
+function fetchBlogger(label, targetId, loadingId, max) {
+  var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json-in-script&max-results=' + (max||10) + '&callback=handleBlog_' + targetId;
+  window['handleBlog_' + targetId] = function(data) {
+    var el = document.getElementById(targetId);
+    var ld = document.getElementById(loadingId);
+    if (ld) ld.style.display = 'none';
+    if (!data.feed.entry || data.feed.entry.length === 0) {
+      el.innerHTML = '<li class="feed-item" style="justify-content:center;color:#999;font-size:12px;padding:20px">記事がありません。Bloggerに投稿するとここに表示されます。</li>';
+      return;
+    }
+    var now = new Date();
+    var html = '';
+    var count = 0;
+    data.feed.entry.forEach(function(entry) {
+      var title = entry.title.$t;
+      var published = entry.published.$t;
+      var date = new Date(published);
+      var dateStr = date.getFullYear() + '-' + ('0'+(date.getMonth()+1)).slice(-2) + '-' + ('0'+date.getDate()).slice(-2) + ' ' + ('0'+date.getHours()).slice(-2) + ':' + ('0'+date.getMinutes()).slice(-2);
+      var link = '#';
+      if (entry.link) {
+        for (var i = 0; i < entry.link.length; i++) {
+          if (entry.link[i].rel === 'alternate') { link = entry.link[i].href; break; }
+        }
+      }
+      var labels = entry.category ? entry.category.map(function(c){return c.term}) : [];
+      var subLabel = '';
+      labels.forEach(function(l) {
+        if (l !== label && CAT_COLORS[l]) subLabel = l;
+        else if (l !== label && !subLabel) subLabel = l;
+      });
+      var catClass = CAT_COLORS[subLabel] || 'info';
+      var isNew = (now - date) < 3 * 24 * 60 * 60 * 1000;
+      html += '<li class="feed-item"><div class="fi-c">';
+      if (subLabel) html += '<span class="cat ' + catClass + '">' + subLabel + '</span>';
+      html += '<div class="fi-t">' + title;
+      if (isNew) html += '<span class="badge new">NEW</span>';
+      html += '</div><div class="fi-d">' + dateStr + '</div></div>';
+      html += '<a href="' + link + '" target="_blank" class="det">詳細</a></li>';
+      count++;
+    });
+    el.innerHTML = html;
+
+    // Update stat counts
+    if (targetId === 'noticeList') {
+      document.getElementById('noticeCount').textContent = count;
+    } else if (targetId === 'newsList') {
+      document.getElementById('newsCount').textContent = count;
+    }
+  };
+  var s = document.createElement('script');
+  s.src = url;
+  s.onerror = function() {
+    var ld = document.getElementById(loadingId);
+    if (ld) ld.textContent = 'Blogger未接続（URL設定後に表示されます）';
+  };
+  document.body.appendChild(s);
+}
+
+// Home tab: latest 3 notices preview
+function fetchBloggerHome(label, targetId, loadingId, max) {
+  var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json-in-script&max-results=' + (max||3) + '&callback=handleBlog_' + targetId;
+  window['handleBlog_' + targetId] = function(data) {
+    var el = document.getElementById(targetId);
+    var ld = document.getElementById(loadingId);
+    if (ld) ld.style.display = 'none';
+    if (!data.feed.entry || data.feed.entry.length === 0) {
+      el.innerHTML = '<li class="feed-item" style="justify-content:center;color:#999;font-size:12px;padding:20px">記事がありません。</li>';
+      return;
+    }
+    var now = new Date();
+    var html = '';
+    data.feed.entry.forEach(function(entry) {
+      var title = entry.title.$t;
+      var published = entry.published.$t;
+      var date = new Date(published);
+      var dateStr = date.getFullYear() + '-' + ('0'+(date.getMonth()+1)).slice(-2) + '-' + ('0'+date.getDate()).slice(-2);
+      var link = '#';
+      if (entry.link) {
+        for (var i = 0; i < entry.link.length; i++) {
+          if (entry.link[i].rel === 'alternate') { link = entry.link[i].href; break; }
+        }
+      }
+      var labels = entry.category ? entry.category.map(function(c){return c.term}) : [];
+      var subLabel = '';
+      labels.forEach(function(l) {
+        if (l !== label && CAT_COLORS[l]) subLabel = l;
+        else if (l !== label && !subLabel) subLabel = l;
+      });
+      var catClass = CAT_COLORS[subLabel] || 'info';
+      var isNew = (now - date) < 3 * 24 * 60 * 60 * 1000;
+      html += '<li class="feed-item"><div class="fi-c">';
+      if (subLabel) html += '<span class="cat ' + catClass + '">' + subLabel + '</span>';
+      html += '<div class="fi-t">' + title;
+      if (isNew) html += '<span class="badge new">NEW</span>';
+      html += '</div><div class="fi-d">' + dateStr + '</div></div>';
+      html += '<a href="' + link + '" target="_blank" class="det">詳細</a></li>';
+    });
+    el.innerHTML = html;
+  };
+  var s = document.createElement('script');
+  s.src = url;
+  s.onerror = function() {
+    var ld = document.getElementById(loadingId);
+    if (ld) ld.textContent = 'Blogger未接続';
+  };
+  document.body.appendChild(s);
+}
+
+// Fetch data for all tabs
+fetchBlogger('通達', 'noticeList', 'noticeLoading', 10);
+fetchBlogger('ニュース', 'newsList', 'newsLoading', 10);
+fetchBloggerHome('通達', 'homeNoticeList', 'homeNoticeLoading', 3);
+
+/* ==========================================
+   Portal Search
+   ========================================== */
+function buildSearchIndex() {
+  var idx = [];
+
+  // Document links
+  document.querySelectorAll('.doc-link').forEach(function(el) {
+    var card = el.closest('.doc-card');
+    var category = card ? card.querySelector('h3').textContent.trim() : '';
+    idx.push({
+      text: el.textContent.trim().replace(/^\u25B8\s*/,''),
+      cat: 'info', catLabel: '規程・文書',
+      sub: category,
+      href: el.getAttribute('href'),
+      target: el.getAttribute('target') || ''
+    });
+  });
+
+  // Category links
+  document.querySelectorAll('.cat-link').forEach(function(el) {
+    var card = el.closest('.cat-card');
+    var category = card ? card.querySelector('h3').textContent.trim() : '';
+    idx.push({
+      text: el.textContent.trim().replace(/^\u25B8\s*/,''),
+      cat: 'info', catLabel: 'カテゴリ',
+      sub: category,
+      href: el.getAttribute('href'),
+      target: el.getAttribute('target') || ''
+    });
+  });
+
+  // Hub / MyPage buttons
+  document.querySelectorAll('.hub-btn, .mypage-btn').forEach(function(el) {
+    var text = el.textContent.trim();
+    if (!text) return;
+    idx.push({
+      text: text,
+      cat: 'hub', catLabel: 'マイページ',
+      sub: '',
+      href: el.getAttribute('href'),
+      target: el.getAttribute('target') || ''
+    });
+  });
+
+  // Tool links
+  document.querySelectorAll('#tab-links .lg-i').forEach(function(el) {
+    idx.push({
+      text: el.textContent.trim(),
+      cat: 'link', catLabel: 'ツール',
+      sub: '',
+      href: el.getAttribute('href'),
+      target: el.getAttribute('target') || ''
+    });
+  });
+
+  // SNS rows
+  document.querySelectorAll('.sns-row').forEach(function(el) {
+    var name = el.querySelector('.sns-name');
+    var nameText = name ? name.textContent.trim() : '';
+    var badges = el.querySelectorAll('.sns-badge');
+    var links = [];
+    badges.forEach(function(b) { links.push(b.textContent.trim()); });
+    var parentBody = el.closest('.link-group-body');
+    var parentLabel = '';
+    if (parentBody && parentBody.previousElementSibling) {
+      parentLabel = parentBody.previousElementSibling.textContent.trim().replace(/[^a-zA-Z\u3000-\u9FFF\u30A0-\u30FF\u3040-\u309F\uFF00-\uFFEF ]/g, '').trim();
+    }
+    if (nameText || links.length) {
+      idx.push({
+        text: nameText || links.join(' '),
+        cat: 'link', catLabel: 'リンク集',
+        sub: parentLabel,
+        href: badges.length ? badges[0].getAttribute('href') : '#',
+        target: '_blank'
+      });
+    }
+  });
+
+  // FAQ items
+  document.querySelectorAll('.faq-q').forEach(function(el) {
+    var answer = el.nextElementSibling;
+    var answerText = answer ? answer.textContent.trim().substring(0, 80) : '';
+    idx.push({
+      text: el.textContent.replace('Q','').replace(/[^a-zA-Z\u3000-\u9FFF\u30A0-\u30FF\u3040-\u309F\uFF00-\uFFEF？。、 ]/g, '').trim(),
+      cat: 'faq', catLabel: 'FAQ',
+      sub: answerText + '...',
+      href: null,
+      faqEl: el
+    });
+  });
+
+  return idx;
+}
+
+var searchIndex = null;
+var searchTimer = null;
+
+function portalSearchHandler() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(doSearch, 200);
+}
+
+function doSearch() {
+  var q = document.getElementById('portalSearch').value.trim().toLowerCase();
+  var results = document.getElementById('searchResults');
+  var clearBtn = document.getElementById('searchClear');
+
+  if (!q) { results.style.display = 'none'; clearBtn.style.display = 'none'; return; }
+  clearBtn.style.display = 'block';
+
+  if (!searchIndex) searchIndex = buildSearchIndex();
+
+  var matches = [];
+  searchIndex.forEach(function(item) {
+    var searchable = (item.text + ' ' + item.catLabel + ' ' + item.sub).toLowerCase();
+    if (searchable.indexOf(q) !== -1) matches.push(item);
+  });
+
+  // Also search Blogger feed items that have been loaded
+  document.querySelectorAll('.feed-item').forEach(function(el) {
+    var titleEl = el.querySelector('.fi-t');
+    var dateEl = el.querySelector('.fi-d');
+    var detEl = el.querySelector('.det');
+    if (!titleEl) return;
+    var txt = titleEl.textContent.trim();
+    if (txt.toLowerCase().indexOf(q) !== -1) {
+      var catEl = el.querySelector('.cat');
+      matches.push({
+        text: txt,
+        cat: 'news', catLabel: catEl ? catEl.textContent.trim() : 'ニュース',
+        sub: dateEl ? dateEl.textContent.trim() : '',
+        href: detEl ? detEl.getAttribute('href') : '#',
+        target: '_blank'
+      });
+    }
+  });
+
+  var html = '';
+  if (matches.length === 0) {
+    html = '<div class="sr-empty">「' + escHtml(q) + '」に一致する項目が見つかりません</div>';
+  } else {
+    html = '<div class="sr-count">' + matches.length + ' 件見つかりました</div>';
+    matches.forEach(function(m, i) {
+      if (i >= 30) return;
+      var catClass = 'cat-' + m.cat;
+      var highlighted = highlightText(m.text, q);
+      if (m.href && m.href !== '#') {
+        html += '<a href="' + escHtml(m.href) + '" target="' + (m.target||'') + '" class="sr-item">';
+      } else if (m.faqEl) {
+        html += '<a href="javascript:void(0)" onclick="openFaqResult(' + i + ')" class="sr-item">';
+      } else {
+        html += '<div class="sr-item">';
+      }
+      html += '<span class="sr-cat ' + catClass + '">' + escHtml(m.catLabel) + '</span>';
+      html += '<span class="sr-title">' + highlighted + '</span>';
+      if (m.sub) html += '<div class="sr-sub">' + escHtml(m.sub) + '</div>';
+      if (m.href && m.href !== '#') { html += '</a>'; }
+      else if (m.faqEl) { html += '</a>'; }
+      else { html += '</div>'; }
+    });
+  }
+  results.innerHTML = html;
+  results.style.display = 'block';
+
+  window._searchMatches = matches;
+}
+
+function openFaqResult(i) {
+  var m = window._searchMatches[i];
+  if (m && m.faqEl) {
+    // Switch to FAQ tab first
+    switchTab('faq');
+    setTimeout(function() {
+      m.faqEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (!m.faqEl.nextElementSibling.classList.contains('open')) {
+        m.faqEl.nextElementSibling.classList.add('open');
+        var arr = m.faqEl.querySelector('.arr');
+        if (arr) arr.innerHTML = '&#9660;';
+      }
+      m.faqEl.style.background = '#FFEE58';
+      setTimeout(function() { m.faqEl.style.background = ''; }, 2000);
+    }, 300);
+  }
+}
+
+function clearSearch() {
+  document.getElementById('portalSearch').value = '';
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchClear').style.display = 'none';
+}
+
+function escHtml(s) {
+  var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+}
+
+function highlightText(text, q) {
+  var safe = escHtml(text);
+  var qSafe = escHtml(q);
+  var re = new RegExp('(' + qSafe.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+  return safe.replace(re, '<mark>$1</mark>');
+}
+</script>
+</body>
+</html>
