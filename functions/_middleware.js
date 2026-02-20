@@ -2,24 +2,25 @@ const ACCESS_KEY = 'rshkr2024portal';
 
 export async function onRequest(context) {
   const url = new URL(context.request.url);
+  const headers = context.request.headers;
 
   // robots.txt は常に許可
   if (url.pathname === '/robots.txt') {
     return context.next();
   }
 
-  // URLパラメータにキーがあればCookieをセットして許可
-  if (url.searchParams.get('key') === ACCESS_KEY) {
+  // 許可条件:
+  // 1. ?key= パラメータが正しい（直接アクセス用）
+  // 2. iframe経由のリクエスト（Sec-Fetch-Dest: iframe）
+  const hasKey = url.searchParams.get('key') === ACCESS_KEY;
+  const isIframe = headers.get('Sec-Fetch-Dest') === 'iframe';
+
+  if (hasKey || isIframe) {
     const res = await context.next();
     const newRes = new Response(res.body, res);
-    newRes.headers.set('Set-Cookie', `portal_access=${ACCESS_KEY}; Path=/; Max-Age=86400; SameSite=None; Secure`);
+    // Google Sitesからのiframe埋め込みのみ許可
+    newRes.headers.set('Content-Security-Policy', "frame-ancestors 'self' https://sites.google.com https://*.google.com");
     return newRes;
-  }
-
-  // Cookieにキーがあれば許可（サブページ遷移用）
-  const cookies = context.request.headers.get('Cookie') || '';
-  if (cookies.includes(`portal_access=${ACCESS_KEY}`)) {
-    return context.next();
   }
 
   // それ以外はブロック
