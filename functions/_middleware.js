@@ -17,10 +17,9 @@ export async function onRequest(context) {
 
   if (hasKey || isIframe) {
     const res = await context.next();
-    const newRes = new Response(res.body, res);
-    // Google Sitesからのiframe埋め込みのみ許可
-    newRes.headers.set('Content-Security-Policy', "frame-ancestors 'self' https://sites.google.com https://*.google.com");
-    return newRes;
+    // frame-ancestorsでGoogle Sitesのみiframe許可
+    res.headers.set('Content-Security-Policy', "frame-ancestors 'self' https://sites.google.com https://*.google.com");
+    return res;
   }
 
   // それ以外はブロック
